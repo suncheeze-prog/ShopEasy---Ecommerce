@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin - Update Delivery Status</title>
+<style>
+body { font-family: "Segoe UI"; background: #f7f8fa; margin: 0; padding: 0; }
+header { background: #222; color: white; padding: 15px; text-align: center; }
+nav a { color: white; text-decoration: underline; }
+.container { max-width: 900px; margin: 30px auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+th, td { padding: 12px; border-bottom: 1px solid #ddd; }
+th { background: #e5e5e5; }
+select { padding: 6px 10px; border-radius: 6px; }
+button { padding: 8px 12px; background: #0078d7; color: white; border: none; border-radius: 6px; cursor: pointer; }
+button:hover { background: #005fa3; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Admin Panel — Update Delivery Status</h1>
+  <nav><a href="delivery-tracking.html">← Back to Tracking</a></nav>
+</header>
+
+<div class="container">
+  <h2>Manage Orders</h2>
+  <table id="admin-table">
+    <thead>
+      <tr>
+        <th>Order ID</th>
+        <th>Product</th>
+        <th>Current Status</th>
+        <th>Change Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="admin-body"></tbody>
+  </table>
+</div>
+
+<script>
+async function loadOrders() {
+  const res = await fetch("http://localhost:4000/api/purchased");
+  const orders = await res.json();
+  const tbody = document.getElementById("admin-body");
+
+  orders.forEach(order => {
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${order._id}</td>
+      <td>${order.name}</td>
+      <td>${order.deliveryStatus || "Pending"}</td>
+
+      <td>
+        <select id="status-${order._id}">
+          <option ${order.deliveryStatus==="Pending"?"selected":""}>Pending</option>
+          <option ${order.deliveryStatus==="Packed"?"selected":""}>Packed</option>
+          <option ${order.deliveryStatus==="Shipped"?"selected":""}>Shipped</option>
+          <option ${order.deliveryStatus==="Out for Delivery"?"selected":""}>Out for Delivery</option>
+          <option ${order.deliveryStatus==="Delivered"?"selected":""}>Delivered</option>
+        </select>
+      </td>
+
+      <td>
+        <button onclick="updateStatus('${order._id}')">Update</button>
+      </td>
+    `;
+
+    tbody.appendChild(tr);
+  });
+}
+
+async function updateStatus(id) {
+  const newStatus = document.getElementById(`status-${id}`).value;
+
+  await fetch(`http://localhost:4000/api/purchased/update-status/${id}`, {
+  method: "PUT",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ deliveryStatus: newStatus })
+});
+
+
+  alert("Status updated!");
+  location.reload();
+}
+
+loadOrders();
+</script>
+
+</body>
+</html>

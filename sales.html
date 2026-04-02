@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShopEasy - Sales Report</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #764ba2;
+      --secondary: #667eea;
+      --white: #ffffff;
+      --glass: rgba(255, 255, 255, 0.9);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: #333;
+      padding-bottom: 50px;
+    }
+
+    /* Header Styling */
+    header {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      padding: 20px 5%;
+      text-align: center;
+      color: white;
+      font-size: 1.8rem;
+      font-weight: 600;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 40px auto;
+      background: var(--glass);
+      backdrop-filter: blur(10px);
+      padding: 40px;
+      border-radius: 30px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.5);
+    }
+
+    h2 {
+      text-align: center;
+      color: var(--primary);
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .back {
+      display: block;
+      text-align: center;
+      margin-bottom: 30px;
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 500;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .back:hover { color: var(--primary); transform: translateX(-5px); }
+
+    /* Summary Cards */
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .summary-card {
+      background: white;
+      border-radius: 20px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+      border: 1px solid #f0f0f0;
+      transition: 0.3s;
+    }
+    .summary-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(118, 75, 162, 0.15); }
+
+    .summary-card h3 { font-size: 0.9rem; color: #888; text-transform: uppercase; margin-bottom: 10px; }
+    .summary-card p { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
+
+    /* Modern Table */
+    .table-container {
+      overflow-x: auto;
+      border-radius: 20px;
+      background: white;
+      padding: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+
+    table { width: 100%; border-collapse: collapse; }
+    th {
+      background: #f8f9fa;
+      color: var(--primary);
+      padding: 15px;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 2px solid #eee;
+    }
+    td { padding: 15px; border-bottom: 1px solid #f0f0f0; font-size: 0.95rem; }
+    tr:last-child td { border-bottom: none; }
+    tr.highlight { background: #f4f0ff; font-weight: 600; }
+
+    /* Chart Section */
+    .chart-container {
+      margin-top: 50px;
+      background: white;
+      padding: 30px;
+      border-radius: 25px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      text-align: center;
+    }
+    .chart-container h3 { margin-bottom: 20px; color: var(--primary); }
+
+    .no-sales {
+      text-align: center;
+      padding: 40px;
+      color: #999;
+      font-size: 1.1rem;
+    }
+
+    @media (max-width: 768px) {
+      .container { padding: 20px; margin: 20px; }
+      .summary { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header><i class="fas fa-chart-pie"></i> ShopEasy Sales Analytics</header>
+
+<div class="container">
+  <h2>Best-Selling Products</h2>
+  <p class="back" onclick="goBack()"><i class="fas fa-arrow-left"></i> Back to Dashboard</p>
+
+  <div class="summary">
+    <div class="summary-card">
+      <h3><i class="fas fa-calendar-day"></i> Daily</h3>
+      <p id="daily-sales">$0.00</p>
+    </div>
+    <div class="summary-card">
+      <h3><i class="fas fa-calendar-week"></i> Weekly</h3>
+      <p id="weekly-sales">$0.00</p>
+    </div>
+    <div class="summary-card">
+      <h3><i class="fas fa-calendar-alt"></i> Quarterly</h3>
+      <p id="quarterly-sales">$0.00</p>
+    </div>
+    <div class="summary-card">
+      <h3><i class="fas fa-clock"></i> Yearly</h3>
+      <p id="yearly-sales">$0.00</p>
+    </div>
+  </div>
+
+  <div class="table-container">
+    <table id="sales-table">
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Product Name</th>
+          <th>Units Sold</th>
+          <th>Total Revenue</th>
+        </tr>
+      </thead>
+      <tbody id="sales-body"></tbody>
+    </table>
+  </div>
+
+  <p class="no-sales" id="no-sales" style="display:none;">No purchases found in records.</p>
+
+  <div class="chart-container">
+    <h3><i class="fas fa-chart-bar"></i> Sales Overview</h3>
+    <canvas id="salesChart"></canvas>
+  </div>
+</div>
+
+<script>
+  // ✅ ORIGINAL LOGIC (Walang binago)
+  const salesRecords = JSON.parse(localStorage.getItem("sales")) || JSON.parse(localStorage.getItem("purchased")) || [];
+  const purchased = JSON.parse(localStorage.getItem("purchased")) || [];
+
+  const salesData = {};
+
+  purchased.forEach(item => {
+    const name = item.name;
+    const total = parseFloat(item.totalAfterVAT || item.total || item.price);
+    if (!salesData[name]) {
+      salesData[name] = { count: 0, total: 0 };
+    }
+    salesData[name].count++;
+    salesData[name].total += total;
+  });
+
+  const sortedSales = Object.entries(salesData).sort((a, b) => b[1].count - a[1].count);
+
+  const tbody = document.getElementById("sales-body");
+  const noSales = document.getElementById("no-sales");
+
+  if (sortedSales.length === 0) {
+    noSales.style.display = "block";
+    document.getElementById("sales-table").style.display = "none";
+  } else {
+    sortedSales.forEach(([name, data], index) => {
+      const row = document.createElement("tr");
+      if (index === 0) row.classList.add("highlight");
+      row.innerHTML = `
+        <td><span style="background:var(--primary); color:white; padding:4px 10px; border-radius:8px;">${index + 1}</span></td>
+        <td style="color:var(--primary); font-weight:600;">${name}</td>
+        <td>${data.count} items</td>
+        <td style="font-weight:700;">$${data.total.toFixed(2)}</td>
+      `;
+      tbody.appendChild(row);
+    });
+  }
+
+  function calcSalesTotals() {
+    const now = new Date();
+    const oneDay = 24 * 60 * 60 * 1000;
+    const oneWeek = oneDay * 7;
+    const oneQuarter = oneDay * 91;
+    const oneYear = oneDay * 365;
+
+    let daily = 0, weekly = 0, quarterly = 0, yearly = 0;
+
+    salesRecords.forEach(sale => {
+      const date = new Date(sale.date);
+      const diff = now - date;
+      const total = parseFloat(sale.totalAfterVAT || sale.total || sale.price || 0);
+
+      if (diff <= oneDay) daily += total;
+      if (diff <= oneWeek) weekly += total;
+      if (diff <= oneQuarter) quarterly += total;
+      if (diff <= oneYear) yearly += total;
+    });
+
+    document.getElementById("daily-sales").textContent = `$${daily.toFixed(2)}`;
+    document.getElementById("weekly-sales").textContent = `$${weekly.toFixed(2)}`;
+    document.getElementById("quarterly-sales").textContent = `$${quarterly.toFixed(2)}`;
+    document.getElementById("yearly-sales").textContent = `$${yearly.toFixed(2)}`;
+  }
+
+  calcSalesTotals();
+
+  const productNames = sortedSales.map(([name]) => name);
+  const unitsSold = sortedSales.map(([_, data]) => data.count);
+
+  if (sortedSales.length > 0) {
+    const ctx = document.getElementById("salesChart").getContext("2d");
+    new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: productNames,
+        datasets: [{
+          label: "Units Sold",
+          data: unitsSold,
+          backgroundColor: "rgba(118, 75, 162, 0.7)",
+          borderColor: "#764ba2",
+          borderWidth: 2,
+          borderRadius: 12
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, grid: { color: "#f0f0f0" } },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+  }
+
+  function goBack() {
+    window.location.href = "home.html";
+  }
+</script>
+
+</body>
+</html>

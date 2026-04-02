@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Track Order | ShopEasy</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f5f8fb;
+      color: #333;
+    }
+
+    /* 🧭 Container */
+    .track-container {
+      max-width: 900px;
+      margin: 100px auto;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      padding: 30px 40px;
+    }
+
+    h2 {
+      color: #0078d7;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    /* 🔍 Search Section */
+    .search-bar {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 40px;
+    }
+
+    .search-bar input {
+      width: 70%;
+      padding: 12px 20px;
+      border-radius: 30px 0 0 30px;
+      border: 2px solid #0078d7;
+      outline: none;
+      font-size: 1rem;
+    }
+
+    .search-bar button {
+      background-color: #0078d7;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 0 30px 30px 0;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .search-bar button:hover {
+      background-color: #005fa3;
+    }
+
+    /* 📦 Order Details */
+    .order-details {
+      margin-bottom: 40px;
+      border-top: 1px solid #e5e5e5;
+      padding-top: 20px;
+    }
+
+    .order-info {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .order-info p {
+      margin: 5px 0;
+    }
+
+    /* 🚚 Tracking Steps */
+    .timeline {
+      position: relative;
+      margin: 30px 0;
+      padding-left: 40px;
+      border-left: 3px solid #0078d7;
+    }
+
+    .timeline-step {
+      position: relative;
+      margin-bottom: 30px;
+    }
+
+    .timeline-step::before {
+      content: '';
+      position: absolute;
+      left: -11px;
+      top: 0;
+      width: 20px;
+      height: 20px;
+      background-color: #0078d7;
+      border-radius: 50%;
+    }
+
+    .timeline-step.completed::before {
+      background-color: #00b67a;
+    }
+
+    .timeline-step h4 {
+      margin: 0;
+      font-size: 1.1rem;
+      color: #0078d7;
+    }
+
+    .timeline-step p {
+      margin: 5px 0 0;
+      color: #555;
+      font-size: 0.95rem;
+    }
+
+    /* 🕓 Responsive */
+    @media (max-width: 600px) {
+      .track-container {
+        padding: 20px;
+      }
+      .search-bar input {
+        width: 60%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ✅ Header -->
+  <div id="header"></div>
+
+  <script>
+    fetch("header.html")
+      .then(res => res.text())
+      .then(data => document.getElementById("header").innerHTML = data);
+  </script>
+
+  <!-- 🧾 Track Order Section -->
+  <div class="track-container">
+    <h2><i class="fa-solid fa-truck"></i> Track Your Order</h2>
+
+    <div class="search-bar">
+      <input type="text" id="orderID" placeholder="Enter your order ID (e.g., SE12345)">
+      <button onclick="trackOrder()">Track</button>
+    </div>
+
+    <div class="order-details" id="orderDetails" style="display:none;">
+      <div class="order-info">
+        <p><strong>Order ID:</strong> <span id="displayOrderID"></span></p>
+        <p><strong>Status:</strong> <span id="orderStatus" style="color:#0078d7;"></span></p>
+      </div>
+
+      <div class="timeline" id="timeline">
+        <!-- Steps will be dynamically added -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ Footer -->
+  <div id="footer"></div>
+
+  <script>
+    fetch("footer.html")
+      .then(res => res.text())
+      .then(data => document.getElementById("footer").innerHTML = data);
+  </script>
+
+  <!-- ⚙️ Script -->
+  <script>
+    function trackOrder() {
+      const id = document.getElementById("orderID").value.trim();
+      if (id === "") {
+        alert("Please enter your Order ID!");
+        return;
+      }
+
+      document.getElementById("orderDetails").style.display = "block";
+      document.getElementById("displayOrderID").innerText = id;
+
+      // Simulated tracking data
+      const trackingSteps = [
+        { title: "Order Placed", desc: "Your order has been confirmed.", done: true },
+        { title: "Packed", desc: "Your item has been packed and ready for shipping.", done: true },
+        { title: "Shipped", desc: "Your item is on its way to the sorting facility.", done: true },
+        { title: "Out for Delivery", desc: "The courier is on the way to your address.", done: false },
+        { title: "Delivered", desc: "Your order has been delivered.", done: false }
+      ];
+
+      const timeline = document.getElementById("timeline");
+      timeline.innerHTML = "";
+      let currentStatus = "";
+
+      trackingSteps.forEach(step => {
+        const div = document.createElement("div");
+        div.className = "timeline-step" + (step.done ? " completed" : "");
+        div.innerHTML = `<h4>${step.title}</h4><p>${step.desc}</p>`;
+        timeline.appendChild(div);
+        if (step.done) currentStatus = step.title;
+      });
+
+      document.getElementById("orderStatus").innerText = currentStatus;
+    }
+  </script>
+</body>
+</html>

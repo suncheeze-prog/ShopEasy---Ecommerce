@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Product - ShopEasy</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #764ba2;
+    --secondary: #667eea;
+    --bg: #f0f2f5;
+    --white: #ffffff;
+    --glass: rgba(255, 255, 255, 0.9);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+
+  body {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding-bottom: 50px;
+    color: #333;
+  }
+
+  /* Header Styling */
+  header {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    padding: 15px 5%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  header h1 { color: white; font-size: 1.5rem; }
+
+  .nav-container { display: flex; align-items: center; gap: 20px; }
+  .nav-left { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+  
+  .nav-left a { 
+    color: rgba(255,255,255,0.8); 
+    text-decoration: none; 
+    font-size: 0.85rem; 
+    transition: 0.3s; 
+    padding: 8px 12px; 
+    border-radius: 10px; 
+    white-space: nowrap;
+  }
+  .nav-left a:hover, .nav-left a.active { background: rgba(255,255,255,0.2); color: white; }
+  
+  #logout-btn { 
+    background: #ff4757; color: white; border: none; padding: 8px 18px; 
+    border-radius: 20px; cursor: pointer; font-size: 0.85rem; transition: 0.3s;
+  }
+
+  /* Form Container */
+  .form-container {
+    max-width: 650px;
+    margin: 40px auto;
+    padding: 40px;
+    background: var(--glass);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+    border-radius: 30px;
+    border: 1px solid rgba(255,255,255,0.5);
+    width: 90%; /* For mobile responsiveness */
+  }
+
+  .form-container h2 { 
+    text-align: center; 
+    margin-bottom: 30px; 
+    color: var(--primary); 
+    font-weight: 600;
+    font-size: 1.8rem;
+  }
+
+  .form-group { margin-bottom: 20px; }
+  label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.9rem; color: #444; }
+  
+  input, textarea, select {
+    width: 100%; padding: 12px 15px; border: 2px solid #eee; border-radius: 12px;
+    font-size: 14px; outline: none; transition: 0.3s; background: #fafafa;
+  }
+  input:focus, textarea:focus, select:focus { border-color: var(--primary); background: #fff; }
+
+  /* Size Pricing Grid */
+  .size-pricing {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 15px;
+  }
+
+  /* Image Upload Area */
+  .file-input-wrapper {
+    border: 2px dashed #ccc;
+    padding: 20px;
+    text-align: center;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: 0.3s;
+    display: block;
+  }
+  .file-input-wrapper:hover { border-color: var(--primary); background: #f0f4ff; }
+  input[type="file"] { display: none; }
+
+  .preview { text-align: center; margin: 15px 0; }
+  .preview img {
+    max-width: 100%; /* Responsive image */
+    height: auto;
+    border-radius: 15px; 
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  }
+
+  /* Buttons */
+  button#addProductBtn {
+    width: 100%; padding: 15px; background: linear-gradient(45deg, var(--secondary), var(--primary));
+    border: none; color: white; font-size: 16px; font-weight: 600; border-radius: 15px;
+    cursor: pointer; transition: 0.3s; margin-top: 20px;
+    box-shadow: 0 10px 20px rgba(118, 75, 162, 0.3);
+  }
+  button#addProductBtn:hover { transform: translateY(-3px); box-shadow: 0 15px 25px rgba(118, 75, 162, 0.4); }
+
+  /* Popup Design */
+  .popup {
+    visibility: hidden; opacity: 0; min-width: 280px; background: white;
+    text-align: center; border-radius: 20px; padding: 30px;
+    position: fixed; z-index: 1000; left: 50%; top: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+    width: 80%; /* For mobile */
+  }
+  .popup.show { visibility: visible; opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  .popup.success { border-bottom: 8px solid #28a745; }
+  .popup.error { border-bottom: 8px solid #dc3545; }
+
+  /* --- MOBILE RESPONSIVENESS MEDIA QUERIES --- */
+  @media (max-width: 768px) {
+    header {
+      flex-direction: column;
+      gap: 15px;
+      padding: 15px;
+    }
+    
+    .nav-container {
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .nav-left {
+      gap: 5px;
+    }
+
+    .nav-left a {
+      font-size: 0.75rem;
+      padding: 6px 10px;
+    }
+
+    .form-container {
+      padding: 25px 20px;
+      margin: 20px auto;
+    }
+
+    .form-container h2 {
+      font-size: 1.5rem;
+    }
+
+    .size-pricing {
+      grid-template-columns: 1fr; /* Isang column na lang sa mobile */
+    }
+
+    #logout-btn {
+      width: 100%;
+      margin-top: 5px;
+    }
+  }
+
+  footer {
+    text-align: center; color: rgba(255,255,255,0.7); padding: 30px; font-size: 13px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>ShopEasy</h1>
+  <nav class="nav-container">
+    <div class="nav-left">
+      <a href="home.html">Home</a>
+      <a href="cart.html">Cart (<span id="cart-count">0</span>)</a>
+      <a href="addproduct.html" class="active">Add Product</a>
+      <a href="products.html">Products</a>
+      <a href="purchased.html">Purchased</a>
+      <a href="delivery.html">Delivery</a>
+      <a href="inventory.html">Inventory</a>
+      <a href="user.html">Account</a>
+    </div>
+    <button id="logout-btn">Logout</button>
+  </nav>
+</header>
+
+<main>
+  <div class="form-container">
+    <h2><i class="fas fa-plus-circle"></i> Add New Product</h2>
+
+    <div class="form-group">
+      <label for="productName">Product Name</label>
+      <input type="text" id="productName" placeholder="e.g. Premium Cotton Shirt" required>
+    </div>
+
+    <div class="form-group">
+      <label for="category">Category</label>
+      <select id="category" onchange="toggleCustomCategory(this.value)">
+        <option value="">Select Category</option>
+        <option value="Clothing">Clothing</option>
+        <option value="Electronics">Electronics</option>
+        <option value="Beauty">Beauty & Personal Care</option>
+        <option value="Home">Home & Living</option>
+        <option value="Groceries">Groceries</option>
+        <option value="Others">Others</option>
+        <option value="Custom">+ Add Custom Category</option>
+      </select>
+      <input type="text" id="customCategory" placeholder="Type custom category name..." style="margin-top:10px; display:none;">
+    </div>
+
+    <div class="form-group">
+      <label for="productQty">Quantity in Stock</label>
+      <input type="number" id="productQty" placeholder="0" required min="1">
+    </div>
+
+    <div class="form-group">
+      <label><i class="fas fa-tags"></i> Price per Size (₱)</label>
+      <div class="size-pricing">
+        <input type="number" id="priceS" placeholder="Small (S)" min="0">
+        <input type="number" id="priceM" placeholder="Medium (M)" min="0">
+        <input type="number" id="priceL" placeholder="Large (L)" min="0">
+        <input type="number" id="priceXL" placeholder="X-Large (XL)" min="0">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Product Image</label>
+      <label for="productImageFile" class="file-input-wrapper">
+        <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: var(--primary); margin-bottom: 10px; display: block;"></i>
+        <span>Click to upload image</span>
+        <input type="file" id="productImageFile" accept="image/png, image/jpeg, image/jpg">
+      </label>
+    </div>
+
+    <div class="preview" id="imagePreview"></div>
+
+    <div class="form-group">
+      <label for="productDesc">Description</label>
+      <textarea id="productDesc" rows="3" placeholder="Tell us more about the product..."></textarea>
+    </div>
+
+    <div class="form-group">
+      <label><i class="fas fa-map-marker-alt"></i> Store Location</label>
+      <div style="display:flex; gap:10px;">
+        <input type="number" id="latitude" placeholder="Latitude" step="0.000001" required>
+        <input type="number" id="longitude" placeholder="Longitude" step="0.000001" required>
+      </div>
+    </div>
+
+    <button id="addProductBtn">Create Listing</button>
+  </div>
+</main>
+
+<div id="popup" class="popup"></div>
+
+<footer>
+  <p>© 2025 ShopEasy | Business Dashboard</p>
+</footer>
+
+<script>
+// --- ALL FUNCTIONS REMAIN EXACTLY THE SAME AS YOUR ORIGINAL CODE ---
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+updateCartCount();
+
+let uploadedImage = "";
+
+function updateCartCount() {
+  document.getElementById("cart-count").textContent = cart.length;
+}
+
+document.getElementById("productImageFile").addEventListener("change", function(e) {
+  const file = e.target.files[0];
+  const preview = document.getElementById("imagePreview");
+  if (!file) { uploadedImage = ""; preview.innerHTML = ""; return; }
+  if (!file.type.startsWith("image/")) { alert("Please upload a valid image file."); return; }
+  const reader = new FileReader();
+  reader.onload = function(event) { uploadedImage = event.target.result; preview.innerHTML = `<img src="${uploadedImage}" alt="Preview">`; };
+  reader.readAsDataURL(file);
+});
+
+function toggleCustomCategory(value) {
+  document.getElementById("customCategory").style.display = (value === "Custom") ? "block" : "none";
+}
+
+function showPopup(message, type = 'success') {
+  const popup = document.getElementById("popup");
+  let icon = '';
+  if (type === 'success') { icon = '✅'; popup.className = 'popup show success'; } 
+  else if (type === 'error') { icon = '❌'; popup.className = 'popup show error'; } 
+  else { icon = 'ℹ️'; popup.className = 'popup show'; }
+  
+  let title = '';
+  let msg = message;
+  if (message.includes('|')) { [title, msg] = message.split('|'); } 
+  else { title = (type === 'success') ? 'Success!' : 'Error!'; }
+  
+  popup.innerHTML = `
+    <span class="popup-icon">${icon}</span>
+    <div class="popup-title">${title}</div>
+    <div class="popup-message">${msg}</div>
+  `;
+  
+  setTimeout(() => { popup.classList.remove("show"); }, 3000);
+}
+
+(function checkSellerAccess() {
+  const userId = localStorage.getItem("userId");
+  const role = localStorage.getItem("role");
+  if (!userId || !role) {
+    showPopup("Login Required|Please login to access this page.", 'error');
+    setTimeout(() => { window.location.href = "login.html"; }, 2000);
+    return;
+  }
+  if (role !== "seller") {
+    showPopup("Access Denied|Only sellers can access this page.", 'error');
+    setTimeout(() => { window.location.href = "home.html"; }, 2000);
+    return;
+  }
+})();
+
+document.getElementById("addProductBtn").addEventListener("click", async function () {
+  const sellerId = localStorage.getItem("userId");
+  const role = localStorage.getItem("role");
+  const trimmedRole = role ? role.trim() : "";
+  
+  if (!sellerId || trimmedRole !== "seller") {
+    showPopup("Authorization Failed|Only sellers can add products.", 'error');
+    return;
+  }
+
+  const name = document.getElementById("productName").value.trim();
+  let category = document.getElementById("category").value;
+  const customCategory = document.getElementById("customCategory").value.trim();
+  const quantity = parseInt(document.getElementById("productQty").value);
+  const desc = document.getElementById("productDesc").value.trim();
+  const latitude = parseFloat(document.getElementById("latitude").value);
+  const longitude = parseFloat(document.getElementById("longitude").value);
+
+  const priceS = parseFloat(document.getElementById("priceS").value) || 0;
+  const priceM = parseFloat(document.getElementById("priceM").value) || 0;
+  const priceL = parseFloat(document.getElementById("priceL").value) || 0;
+  const priceXL = parseFloat(document.getElementById("priceXL").value) || 0;
+
+  if (category === "Custom" && customCategory) category = customCategory;
+  if (!name || !quantity || !uploadedImage || !category || isNaN(latitude) || isNaN(longitude)) {
+    showPopup("Missing Information|Please fill all required fields.", 'error');
+    return;
+  }
+
+  const productData = {
+    name, category, quantity, desc, image: uploadedImage,
+    prices: { S: priceS, M: priceM, L: priceL, XL: priceXL },
+    seller: sellerId,
+    location: { lat: latitude, lng: longitude }
+  };
+  
+  try {
+    const response = await fetch("http://localhost:4000/api/products/add", {
+      method: "POST",
+      headers: { 
+        "Content-Type": "application/json",
+        "x-user-id": sellerId,
+        "x-user-role": trimmedRole
+      },
+      body: JSON.stringify(productData)
+    });
+    
+    const result = await response.json();
+    if (response.ok) {
+      showPopup("Success!|Product has been listed.", 'success');
+      setTimeout(() => window.location.href="home.html", 2000);
+    } else {
+      showPopup("Failed| " + (result.message || "Server error"), 'error');
+    }
+  } catch(err) {
+    showPopup("Connection Error|Check your server.", 'error');
+  }
+});
+
+document.getElementById("logout-btn").addEventListener("click", () => {
+  localStorage.clear();
+  showPopup("👋 Logged Out!");
+  setTimeout(() => { window.location.href = "login.html"; }, 800);
+});
+</script>
+</body>
+</html>

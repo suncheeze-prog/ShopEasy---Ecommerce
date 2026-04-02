@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShopEasy - Purchase History</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #764ba2;
+      --secondary: #667eea;
+      --accent: #43e97b;
+      --glass: rgba(255, 255, 255, 0.95);
+      --text-dark: #333;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      padding: 20px 5%;
+      color: white;
+      text-align: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    nav { margin-top: 10px; }
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      margin: 0 10px;
+      font-size: 0.9rem;
+      transition: 0.3s;
+      opacity: 0.8;
+    }
+    nav a:hover { opacity: 1; text-decoration: underline; }
+
+    .container {
+      max-width: 1100px;
+      width: 95%;
+      margin: 40px auto;
+      background: var(--glass);
+      border-radius: 30px;
+      padding: 40px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+      flex-grow: 1;
+    }
+
+    h2 {
+      color: var(--primary);
+      text-align: center;
+      margin-bottom: 30px;
+      font-weight: 700;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 15px;
+    }
+
+    /* Filter Section Style */
+    .filter-section {
+      background: #f8f9fa;
+      padding: 15px 25px;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 30px;
+      border: 1px solid #eee;
+    }
+
+    select {
+      padding: 10px 20px;
+      border-radius: 10px;
+      border: 2px solid #ddd;
+      outline: none;
+      font-weight: 500;
+      color: var(--text-dark);
+      cursor: pointer;
+    }
+
+    select:focus { border-color: var(--secondary); }
+
+    /* Modern Table Style */
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 20px;
+      border: 1px solid #eee;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    th {
+      background: #f8f9fa;
+      color: var(--primary);
+      padding: 18px 15px;
+      text-align: left;
+      font-weight: 600;
+      border-bottom: 2px solid #eee;
+    }
+
+    td {
+      padding: 15px;
+      border-bottom: 1px solid #eee;
+      color: var(--text-dark);
+      font-size: 0.9rem;
+    }
+
+    tr:hover { background-color: #fcfaff; }
+
+    .empty {
+      text-align: center;
+      padding: 50px;
+      color: #999;
+      font-style: italic;
+    }
+
+    /* Summary Section */
+    .summary {
+      margin-top: 40px;
+      background: #f8f9fa;
+      padding: 25px;
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+      border-right: 8px solid var(--primary);
+    }
+
+    .summary p {
+      font-size: 1rem;
+      color: #555;
+      display: flex;
+      justify-content: space-between;
+      width: 300px;
+    }
+
+    .summary .final-total-row {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-top: 10px;
+      border-top: 1px solid #ddd;
+      padding-top: 10px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: white;
+      font-size: 0.9rem;
+      background: rgba(0,0,0,0.1);
+      margin-top: auto;
+    }
+
+    @media (max-width: 768px) {
+      .container { padding: 20px; }
+      .summary { align-items: center; }
+      .summary p { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1><i class="fas fa-receipt"></i> Purchased Items</h1>
+    <nav>
+      <a href="home.html"><i class="fas fa-home"></i> Back to Home</a>
+      <span style="color:rgba(255,255,255,0.5)">|</span>
+      <a href="delivery-tracking.html"><i class="fas fa-truck"></i> Track Orders</a>
+    </nav>
+  </header>
+
+  <div class="container">
+    <h2><i class="fas fa-history"></i> Your Purchase History</h2>
+
+    <div class="filter-section">
+      <label for="date-filter"><strong><i class="fas fa-calendar-alt"></i> Filter by Date:</strong></label>
+      <select id="date-filter">
+        <option value="all">Show All Records</option>
+      </select>
+    </div>
+
+    <div class="table-wrapper">
+      <table id="purchased-table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Qty</th>
+            <th>VAT %</th>
+            <th>Date Purchased</th>
+            <th>Total After VAT</th>
+          </tr>
+        </thead>
+        <tbody id="purchased-items"></tbody>
+      </table>
+      <p id="empty-msg" class="empty" style="display:none;">
+        <i class="fas fa-folder-open" style="font-size: 2rem; display: block; margin-bottom: 10px;"></i>
+        You haven't purchased anything yet.
+      </p>
+    </div>
+
+    <div class="summary" id="summary" style="display:none;">
+      <p><span>Total Before VAT:</span> <strong id="total-before">0.00</strong></p>
+      <p><span>VAT Deducted:</span> <strong id="vat-deducted">0.00</strong></p>
+      <p class="final-total-row"><span>Final Total:</span> <span id="final-total">0.00</span></p>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2025 ShopEasy | Secured Transaction System</p>
+  </footer>
+
+  <script>
+    // --- NANATILING FUNCTIONS (WALANG BINAGO SA LOGIC) ---
+    const tbody = document.getElementById("purchased-items");
+    const emptyMsg = document.getElementById("empty-msg");
+    const summary = document.getElementById("summary");
+    const dateFilter = document.getElementById("date-filter");
+
+    let totalBefore = 0;
+    let vatDeducted = 0;
+    let totalAfter = 0;
+    let purchased = [];
+
+   async function loadPurchased() {
+  const userId = localStorage.getItem("userId"); // Kunin ang ID ng naka-login
+  if (!userId) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  try {
+    // Nagdagdag tayo ng query parameter na ?userId=
+    const res = await fetch(`http://localhost:4000/api/purchased?userId=${userId}`);
+    purchased = await res.json();
+
+    // Kunin ang mga unique dates para sa filter
+    const uniqueDates = [...new Set(purchased.map(item => item.date?.split(",")[0] || ""))];
+    
+    // Clear muna ang filter bago lagyan (except the 'All' option)
+    dateFilter.innerHTML = '<option value="all">Show All Records</option>';
+
+    uniqueDates.forEach(date => {
+      if (date.trim() !== "") {
+        const opt = document.createElement("option");
+        opt.value = date;
+        opt.textContent = date;
+        dateFilter.appendChild(opt);
+      }
+    });
+
+    renderPurchases();
+  } catch (error) {
+    console.error("Error loading purchased:", error);
+  }
+}
+
+    function renderPurchases(filterDate = "all") {
+      tbody.innerHTML = "";
+      totalBefore = 0;
+      vatDeducted = 0;
+      totalAfter = 0;
+
+      let filtered = filterDate === "all"
+        ? purchased
+        : purchased.filter(item => (item.date || "").includes(filterDate));
+
+      if (filtered.length === 0) {
+        emptyMsg.style.display = "block";
+        summary.style.display = "none";
+        return;
+      }
+
+      emptyMsg.style.display = "none";
+      summary.style.display = "block";
+
+      filtered.forEach(item => {
+        const name = item.name || "Unnamed Product";
+        const price = parseFloat(item.price) || 0;
+        const qty = item.quantity || 1;
+        const vat = parseFloat(item.vat) || 0;
+        const date = item.date || "Unknown Date";
+
+        const subtotal = price * qty;
+        const vatAmount = (subtotal * vat) / 100;
+        const totalAfterVAT = subtotal - vatAmount;
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td style="font-weight: 600; color: var(--primary);">${name}</td>
+          <td>$${price.toFixed(2)}</td>
+          <td style="font-weight: 600;">${qty}</td>
+          <td style="color: #666;">${vat}%</td>
+          <td style="font-size: 0.85rem;">${date}</td>
+          <td style="font-weight: 700; color: #2d3436;">$${totalAfterVAT.toFixed(2)}</td>
+        `;
+        tbody.appendChild(row);
+
+        totalBefore += subtotal;
+        vatDeducted += vatAmount;
+        totalAfter += totalAfterVAT;
+      });
+
+      document.getElementById("total-before").textContent = `$${totalBefore.toFixed(2)}`;
+      document.getElementById("vat-deducted").textContent = `$${vatDeducted.toFixed(2)}`;
+      document.getElementById("final-total").textContent = `$${totalAfter.toFixed(2)}`;
+    }
+
+    dateFilter.addEventListener("change", () => {
+      renderPurchases(dateFilter.value);
+    });
+
+    loadPurchased();
+  </script>
+
+</body>
+</html>

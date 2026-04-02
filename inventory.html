@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShopEasy - Inventory Management</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #764ba2;
+      --secondary: #667eea;
+      --accent: #43e97b;
+      --danger: #ff4757;
+      --glass: rgba(255, 255, 255, 0.95);
+      --text-dark: #333;
+      --text-light: #666;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding-bottom: 50px;
+    }
+
+    header {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      padding: 15px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .back-btn {
+      background: white; color: var(--primary); border: none;
+      padding: 8px 18px; border-radius: 20px; cursor: pointer;
+      font-weight: 600; transition: 0.3s; display: flex; align-items: center; gap: 8px;
+    }
+    .back-btn:hover { transform: translateX(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+
+    .container {
+      max-width: 1000px; margin: 40px auto;
+      background: var(--glass); border-radius: 30px;
+      padding: 40px; box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+    }
+
+    h2 { color: var(--primary); margin-bottom: 30px; font-weight: 700; display: flex; align-items: center; gap: 15px; }
+
+    .table-wrapper {
+      overflow-x: auto; border-radius: 20px; border: 1px solid #eee; background: white;
+    }
+
+    table { width: 100%; border-collapse: collapse; }
+
+    th {
+      background: #f8f9fa; color: var(--primary);
+      padding: 18px 15px; text-align: left; font-weight: 600;
+      border-bottom: 2px solid #eee;
+    }
+
+    td { padding: 15px; border-bottom: 1px solid #eee; color: var(--text-dark); vertical-align: middle; }
+
+    tr:last-child td { border-bottom: none; }
+    tr:hover { background-color: #fcfaff; }
+
+    .qty-badge {
+      padding: 5px 12px; border-radius: 15px; font-weight: 600; font-size: 0.85rem;
+      background: #eef2ff; color: var(--secondary); display: inline-block;
+    }
+
+    .out-of-stock {
+      background: #ffeef0; color: var(--danger);
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; }
+    }
+
+    .action-btn {
+      background: linear-gradient(to right, var(--secondary), var(--primary));
+      color: white; border: none; padding: 10px 18px; border-radius: 12px;
+      cursor: pointer; transition: 0.3s; font-weight: 500; display: flex; align-items: center; gap: 8px;
+    }
+
+    .action-btn:hover:not(:disabled) {
+      transform: translateY(-2px); box-shadow: 0 5px 15px rgba(118, 75, 162, 0.3);
+    }
+
+    .action-btn:disabled {
+      background: #ccc; cursor: not-allowed; opacity: 0.7;
+    }
+
+    .popup {
+      position: fixed; top: 30px; right: 30px;
+      background: white; color: var(--text-dark);
+      padding: 15px 25px; border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      display: none; z-index: 2000; font-weight: 600;
+      border-left: 5px solid var(--accent);
+      animation: slideIn 0.4s ease-out;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(100px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div style="font-size: 1.5rem; font-weight: 700;">ShopEasy</div>
+    <button class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i> Back</button>
+  </header>
+
+  <div class="container">
+    <h2><i class="fas fa-boxes"></i> Product Inventory</h2>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th><i class="fas fa-tag"></i> Product Name</th>
+            <th><i class="fas fa-dollar-sign"></i> Price</th>
+            <th><i class="fas fa-cubes"></i> Stock Level</th>
+            <th><i class="fas fa-tools"></i> Action</th>
+          </tr>
+        </thead>
+        <tbody id="inventory-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="popup" id="popup-msg"></div>
+
+  <script>
+    // --- NANATILING FUNCTIONS (WALANG BINAGO) ---
+    let products = JSON.parse(localStorage.getItem("products")) || [];
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    products = products.map(p => ({
+      ...p,
+      quantity: p.quantity ?? 10 
+    }));
+
+    localStorage.setItem("products", JSON.stringify(products));
+
+    const tbody = document.getElementById("inventory-body");
+    const popup = document.getElementById("popup-msg");
+
+    function renderInventory() {
+      tbody.innerHTML = "";
+      products.forEach((p, index) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td style="font-weight: 600;">${p.name}</td>
+          <td style="color: var(--primary); font-weight: 700;">₱${p.price.toLocaleString()}</td>
+          <td>
+            <span class="qty-badge ${p.quantity === 0 ? 'out-of-stock' : ''}">
+              <i class="fas ${p.quantity === 0 ? 'fa-exclamation-triangle' : 'fa-check-circle'}"></i> 
+              ${p.quantity === 0 ? 'Out of Stock' : p.quantity + ' Units'}
+            </span>
+          </td>
+          <td>
+            <button class="action-btn" onclick="addToCart(${index})" ${p.quantity === 0 ? 'disabled' : ''}>
+              <i class="fas fa-cart-plus"></i> Add to Cart
+            </button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function addToCart(index) {
+      const product = products[index];
+
+      if (product.quantity <= 0) {
+        showPopup("❌ Out of stock!");
+        return;
+      }
+
+      cart.push({ name: product.name, price: product.price });
+      localStorage.setItem("cart", JSON.stringify(cart));
+
+      products[index].quantity -= 1;
+      localStorage.setItem("products", JSON.stringify(products));
+
+      showPopup(`✅ ${product.name} added to cart!`);
+      renderInventory();
+    }
+
+    function showPopup(msg) {
+      popup.textContent = msg;
+      popup.style.display = "block";
+      setTimeout(() => popup.style.display = "none", 2000);
+    }
+
+    function goBack() {
+      window.location.href = "home.html";
+    }
+
+    renderInventory();
+  </script>
+</body>
+</html>

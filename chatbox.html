@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart AI Support Concierge</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
+        .chat-container { width: 100%; max-width: 500px; background: white; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); display: flex; flex-direction: column; height: 650px; overflow: hidden; }
+        
+        .chat-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; display: flex; align-items: center; gap: 15px; }
+        .bot-avatar { width: 50px; height: 50px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+        .status-dot { width: 10px; height: 10px; background: #4ade80; border-radius: 50%; display: inline-block; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+        .chat-window { flex: 1; padding: 20px; overflow-y: auto; background: #f8f9fa; display: flex; flex-direction: column; gap: 15px; scroll-behavior: smooth; }
+        .message { max-width: 85%; padding: 14px 18px; border-radius: 18px; font-size: 0.95rem; line-height: 1.5; position: relative; animation: slideIn 0.3s ease; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .bot-message { background: white; color: #333; align-self: flex-start; border-bottom-left-radius: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .user-message { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; align-self: flex-end; border-bottom-right-radius: 4px; box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3); }
+
+        .message-time { font-size: 0.7rem; opacity: 0.6; margin-top: 5px; display: block; }
+
+        /* Typing Animation */
+        .typing-indicator { display: none; background: white; padding: 14px 18px; border-radius: 18px; align-self: flex-start; width: fit-content; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .dot { height: 8px; width: 8px; background-color: #764ba2; border-radius: 50%; display: inline-block; animation: bounce 1.3s linear infinite; margin: 0 2px; }
+        .dot:nth-child(2) { animation-delay: -1.1s; }
+        .dot:nth-child(3) { animation-delay: -0.9s; }
+        @keyframes bounce { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-7px); } }
+
+        /* Chips */
+        .suggestion-box { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+        .chip { background: #f0f2f5; border: 1px solid #764ba2; color: #764ba2; padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; cursor: pointer; transition: all 0.3s ease; font-weight: 600; }
+        .chip:hover { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3); }
+
+        /* AI Badge */
+        .ai-badge { display: inline-flex; align-items: center; gap: 5px; background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; padding: 3px 10px; border-radius: 12px; font-size: 0.7rem; font-weight: 600; margin-left: 8px; }
+
+        .input-area { padding: 15px 20px; background: white; display: flex; gap: 10px; border-top: 1px solid #eee; }
+        input { flex: 1; padding: 14px 18px; border: 2px solid #e9ecef; border-radius: 25px; outline: none; font-size: 0.9rem; transition: all 0.3s ease; }
+        input:focus { border-color: #764ba2; box-shadow: 0 0 0 3px rgba(118, 75, 162, 0.1); }
+        
+        button { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3); }
+        button:hover { transform: scale(1.1); box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4); }
+        button:active { transform: scale(0.95); }
+
+        /* Error/Loading States */
+        .error-message { background: #fee; color: #c00; border-left: 4px solid #c00; }
+        .loading-message { background: #e3f2fd; color: #1976d2; border-left: 4px solid #1976d2; }
+
+        /* Scrollbar */
+        .chat-window::-webkit-scrollbar { width: 6px; }
+        .chat-window::-webkit-scrollbar-track { background: #f1f1f1; }
+        .chat-window::-webkit-scrollbar-thumb { background: #888; border-radius: 10px; }
+        .chat-window::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body>
+
+    <div class="chat-container">
+        <div class="chat-header">
+            <div class="bot-avatar">🤖</div>
+            <div>
+                <h3 style="font-size: 1.2rem;">ShopEasy AI Assistant <span class="ai-badge"><i class="fas fa-sparkles"></i> AI Powered</span></h3>
+                <small><span class="status-dot"></span> Online & Learning</small>
+            </div>
+        </div>
+
+        <div class="chat-window" id="chatWindow">
+            <div class="message bot-message">
+                👋 Hello! I'm your AI-powered shopping assistant. I can help you with:
+                <div class="suggestion-box">
+                    <div class="chip" onclick="quickAsk('How to create an account?')">📝 Create Account</div>
+                    <div class="chip" onclick="quickAsk('How to become a seller?')">🏪 Be a Seller</div>
+                    <div class="chip" onclick="quickAsk('Track my order')">📦 Track Order</div>
+                    <div class="chip" onclick="quickAsk('GCash payment help')">💳 Payment Help</div>
+                    <div class="chip" onclick="quickAsk('How to return an item?')">↩️ Returns</div>
+                </div>
+                <span class="message-time">Just now</span>
+            </div>
+            <div id="typingBubble" class="typing-indicator">
+                <span class="dot"></span> <span class="dot"></span> <span class="dot"></span>
+            </div>
+        </div>
+
+        <div class="input-area">
+            <input type="text" id="userInput" placeholder="Ask me anything about shopping..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <script>
+        const chatWindow = document.getElementById('chatWindow');
+        const typingBubble = document.getElementById('typingBubble');
+        const userInput = document.getElementById('userInput');
+        
+        let conversationHistory = [];
+
+        // =====================
+        // PROFANITY FILTER
+        // =====================
+        const curseWords = [
+            // English
+            'fuck', 'shit', 'bitch', 'ass', 'damn', 'hell', 'bastard', 'dick', 'cock', 
+            'pussy', 'cunt', 'whore', 'slut', 'piss', 'asshole', 'bullshit', 'motherfucker',
+            'nigga', 'nigger', 'faggot', 'retard', 'wtf', 'stfu', 'fck', 'fuk',
+            
+            // Tagalog
+            'putang ina', 'tangina', 'gago', 'tarantado', 'ulol', 'bobo', 'tanga', 
+            'hayop', 'peste', 'hudas', 'leche', 'puta', 'punyeta', 'pakshet', 
+            'pakyu', 'kingina', 'potangina', 'hinayupak', 'putragis', 'yawa',
+            'inutil', 'tarantado', 'walang hiya', 'amputa', 'lintek', 'kupal',
+            'kantot', 'jakol', 'pokpok', 'tite', 'bilat', 'puki', 'tamod',
+            
+            // Common variations/misspellings
+            'p*ta', 'p0ta', 'fck', 'fvck', 'fuk', 'fucc', 'fuc',
+            'tanginamo', 'tangina mo', 'putanginamo', 'gag0', 'b0b0', 't@ng@',
+            'sht', 'btch', 'asz', 'fck you', 'fk u', 'fak u'
+        ];
+
+        // =====================
+        // CHECK FOR PROFANITY
+        // =====================
+        function containsProfanity(text) {
+            const lowerText = text.toLowerCase();
+            
+            // Check for exact matches and partial matches
+            for (let word of curseWords) {
+                if (lowerText.includes(word)) {
+                    return true;
+                }
+            }
+            
+            // Check for spaced out versions (e.g., "p u t a")
+            const spacedText = lowerText.replace(/\s+/g, '');
+            for (let word of curseWords) {
+                const spacedWord = word.replace(/\s+/g, '');
+                if (spacedText.includes(spacedWord)) {
+                    return true;
+                }
+            }
+            
+            return false;
+        }
+
+        // =====================
+        // PROFESSIONAL WARNING RESPONSES
+        // =====================
+        const warningResponses = [
+            "I kindly ask you to maintain a respectful tone. I'm here to help you with your shopping needs. How may I assist you today? 😊",
+            
+            "I understand you might be frustrated, but let's keep our conversation professional. I'm here to solve your concern - what seems to be the issue? 🤝",
+            
+            "I notice some inappropriate language. Let's keep things respectful so I can better assist you. What do you need help with? 💼",
+            
+            "Respectful communication helps me serve you better! Please rephrase your question, and I'll be happy to help. ✨",
+            
+            "I'm programmed to maintain professional standards. Let's restart - how can I help you with your ShopEasy experience? 🛍️",
+            
+            "Language matters! I'm here to provide excellent service, but I need you to communicate respectfully. What's your concern? 🙏",
+            
+            "I appreciate your patience. While I understand frustrations happen, let's keep our conversation civil. How can I resolve your issue? 💬"
+        ];
+
+        let warningCount = 0;
+
+        function getProfanityResponse() {
+            warningCount++;
+            
+            if (warningCount >= 3) {
+                return "⚠️ **Important Notice**\n\nI've noticed repeated use of inappropriate language. Our conversation is being logged for quality assurance.\n\nTo continue receiving support:\n• Please communicate respectfully\n• Focus on your actual concern\n• Let me help resolve your issue\n\nI'm here to assist - let's work together professionally. What do you need help with? 🤝";
+            }
+            
+            // Return random warning response
+            return warningResponses[Math.floor(Math.random() * warningResponses.length)];
+        }
+
+        // Enhanced knowledge base with context
+        const knowledgeBase = {
+            account: {
+                create: "To create an account on ShopEasy:\n\n1. Click 'Sign Up' on the homepage\n2. Enter your email and create a password\n3. Verify your email (check spam folder if needed)\n4. Complete your profile with basic info\n\nTip: Use a strong password with letters, numbers, and symbols! 🔒",
+                login: "Having trouble logging in? Make sure:\n\n✓ Your email is verified\n✓ Caps Lock is off\n✓ Password is correct\n\nForgot password? Click 'Forgot Password' on the login page to reset it via email.",
+                security: "Your account security is important! Here's how to stay safe:\n\n• Use 2-factor authentication (enable in Settings)\n• Never share your password\n• Use unique passwords for each site\n• Review login activity regularly\n\nNeed help enabling 2FA? Just ask!"
+            },
+            seller: {
+                become: "Excited to start selling? Here's how:\n\n1. Go to Settings > 'Apply as Vendor'\n2. Prepare 1 valid government ID\n3. Fill out business details\n4. Wait 24-48 hours for approval\n5. Start listing your products!\n\n💡 Tip: Complete sellers get priority in search results!",
+                products: "To add products as a seller:\n\n1. Go to 'Add Product' in the menu\n2. Upload clear product photos\n3. Write detailed descriptions\n4. Set competitive prices\n5. Add stock quantity\n\nPro tip: Use all available photo slots for better sales! 📸",
+                fees: "ShopEasy seller fees:\n\n• No listing fees! 🎉\n• 5% commission per sale\n• Payment processing: 2.5%\n• Free first 30 days for new sellers\n\nYou'll see exact fees before confirming each sale."
+            },
+            orders: {
+                track: "To track your order:\n\n1. Go to 'My Purchases'\n2. Click on your order\n3. View real-time tracking\n\nDelivery times:\n• Metro Manila: 2-3 days\n• Luzon: 3-5 days\n• Visayas/Mindanao: 5-7 days\n\nNeed the tracking number? It's shown in order details! 📦",
+                cancel: "To cancel an order:\n\n⚠️ Only possible if:\n• Not yet shipped\n• Within 1 hour of purchase\n\nSteps:\n1. Go to 'My Purchases'\n2. Select order\n3. Click 'Cancel Order'\n4. Choose reason\n\nRefund will be processed in 3-5 business days.",
+                status: "Order statuses explained:\n\n📝 Pending - Waiting for seller confirmation\n📦 Processing - Being packed\n🚚 Shipped - On the way to you\n✅ Delivered - Arrived at your address\n\nStuck on one status? Contact the seller directly through the order page."
+            },
+            payment: {
+                gcash: "Paying with GCash:\n\n1. Choose GCash at checkout\n2. You'll receive a payment link\n3. Open in GCash app\n4. Confirm payment\n5. Return to ShopEasy\n\nTroubleshooting:\n• Ensure sufficient GCash balance\n• Check internet connection\n• Try again after 5 minutes if error\n\nPayment not reflecting? Screenshot your GCash receipt and contact support! 💳",
+                maya: "Maya payments are fast and secure:\n\n1. Select Maya at checkout\n2. Enter Maya number\n3. Approve on Maya app\n4. Done!\n\nMaya offers:\n• Instant confirmation\n• Buyer protection\n• 0% interest installments (select items)",
+                failed: "Payment failed? Common fixes:\n\n✓ Check your balance\n✓ Verify card/account details\n✓ Try a different payment method\n✓ Clear browser cache\n✓ Contact your bank if card is blocked\n\nStill stuck? Our support team can help! 💪"
+            },
+            returns: {
+                process: "Return/refund policy:\n\n✅ Valid within 7 days of delivery\n✅ Item must be unused, with tags\n✅ Original packaging required\n\nHow to return:\n1. Go to 'My Purchases'\n2. Select 'Return/Refund'\n3. Choose reason\n4. Upload photos if damaged\n5. Wait for seller approval\n\nRefunds: 5-10 business days after approval ↩️",
+                damaged: "Received a damaged item? I'm sorry to hear that! 😔\n\nHere's what to do:\n\n1. DON'T click 'Order Received' yet!\n2. Take clear photos of damage\n3. Open 'Return/Refund' request\n4. Select 'Damaged Item'\n5. Upload photos\n\nYou'll get:\n• Full refund OR replacement\n• Return shipping covered by seller\n\nNeed urgent help? Chat with seller directly!",
+                wrong: "Wrong item delivered?\n\n1. Check order details to confirm\n2. Take photos of what you received\n3. Request return/refund\n4. Choose 'Wrong Item'\n5. Upload comparison photos\n\n✅ Full refund guaranteed\n✅ No return shipping fee\n✅ Priority resolution (24 hours)"
+            },
+            general: {
+                hours: "ShopEasy operates:\n\n🏪 Website: 24/7\n💬 AI Support: Always available (that's me!)\n👥 Human Support: 9 AM - 9 PM daily\n📞 Hotline: 1-800-SHOP-EASY\n\nI'm always here to help, even at 3 AM! 🌙",
+                shipping: "Shipping information:\n\n📦 FREE shipping on orders ₱500+\n🚚 Standard delivery: 3-7 days\n⚡ Express delivery: 1-2 days (+₱99)\n\nShipping partners:\n• J&T Express\n• LBC\n• Ninja Van\n• JRS Express\n\nTrack all shipments in real-time!",
+                promo: "Current promotions:\n\n🎉 New User: 20% off first order\n💝 Free shipping on ₱500+\n🎁 Birthday month: Extra 10% off\n⭐ Loyalty points: Earn on every purchase\n\nPromo codes are auto-applied at checkout!\n\nWant to see all deals? Visit our Promotions page! 🛍️"
+            }
+        };
+
+        function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
+        function quickAsk(question) { userInput.value = question; sendMessage(); }
+
+        function getTime() {
+            return new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        async function sendMessage() {
+            const text = userInput.value.trim();
+            if (!text) return;
+
+            appendMessage(text, 'user-message', getTime());
+            conversationHistory.push({ role: 'user', content: text });
+            userInput.value = "";
+            
+            typingBubble.style.display = "block";
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+
+            setTimeout(async () => {
+                typingBubble.style.display = "none";
+                const reply = await getAIResponse(text);
+                appendMessage(reply, 'bot-message', getTime());
+                conversationHistory.push({ role: 'assistant', content: reply });
+            }, 1200);
+        }
+
+        async function getAIResponse(userMessage) {
+            const msg = userMessage.toLowerCase();
+            
+            // Intent detection with AI-like logic
+            let response = "";
+            
+            // Account related
+            if (msg.includes('account') || msg.includes('register') || msg.includes('sign up') || msg.includes('create') || msg.includes('akawnt') || msg.includes('gawa')) {
+                if (msg.includes('how') || msg.includes('paano') || msg.includes('create')) {
+                    response = knowledgeBase.account.create;
+                } else if (msg.includes('login') || msg.includes('log in') || msg.includes('password') || msg.includes('forgot')) {
+                    response = knowledgeBase.account.login;
+                } else if (msg.includes('security') || msg.includes('safe') || msg.includes('protect') || msg.includes('2fa')) {
+                    response = knowledgeBase.account.security;
+                } else {
+                    response = knowledgeBase.account.create;
+                }
+            }
+            
+            // Seller related
+            else if (msg.includes('sell') || msg.includes('seller') || msg.includes('vendor') || msg.includes('merchant') || msg.includes('benta') || msg.includes('magbenta')) {
+                if (msg.includes('product') || msg.includes('add') || msg.includes('list') || msg.includes('upload')) {
+                    response = knowledgeBase.seller.products;
+                } else if (msg.includes('fee') || msg.includes('commission') || msg.includes('cost') || msg.includes('bayad')) {
+                    response = knowledgeBase.seller.fees;
+                } else {
+                    response = knowledgeBase.seller.become;
+                }
+            }
+            
+            // Orders & Tracking
+            else if (msg.includes('track') || msg.includes('order') || msg.includes('delivery') || msg.includes('shipping') || msg.includes('nasaan') || msg.includes('parcel')) {
+                if (msg.includes('cancel') || msg.includes('stop') || msg.includes('abort')) {
+                    response = knowledgeBase.orders.cancel;
+                } else if (msg.includes('status') || msg.includes('pending') || msg.includes('processing')) {
+                    response = knowledgeBase.orders.status;
+                } else {
+                    response = knowledgeBase.orders.track;
+                }
+            }
+            
+            // Payment
+            else if (msg.includes('payment') || msg.includes('pay') || msg.includes('gcash') || msg.includes('maya') || msg.includes('bayad') || msg.includes('card')) {
+                if (msg.includes('gcash')) {
+                    response = knowledgeBase.payment.gcash;
+                } else if (msg.includes('maya')) {
+                    response = knowledgeBase.payment.maya;
+                } else if (msg.includes('fail') || msg.includes('error') || msg.includes('problem') || msg.includes('hindi')) {
+                    response = knowledgeBase.payment.failed;
+                } else {
+                    response = "We accept multiple payment methods:\n\n💳 GCash\n💳 Maya/PayMaya\n💳 Credit/Debit Cards\n🏦 Bank Transfer\n💵 Cash on Delivery\n\nAll payments are secure and encrypted! Which one would you like to know more about?";
+                }
+            }
+            
+            // Returns & Refunds
+            else if (msg.includes('return') || msg.includes('refund') || msg.includes('balik') || msg.includes('damaged') || msg.includes('wrong') || msg.includes('sira')) {
+                if (msg.includes('damaged') || msg.includes('broken') || msg.includes('sira') || msg.includes('defect')) {
+                    response = knowledgeBase.returns.damaged;
+                } else if (msg.includes('wrong') || msg.includes('mali') || msg.includes('incorrect')) {
+                    response = knowledgeBase.returns.wrong;
+                } else {
+                    response = knowledgeBase.returns.process;
+                }
+            }
+            
+            // Greetings
+            else if (msg.includes('hi') || msg.includes('hello') || msg.includes('hey') || msg.includes('kamusta') || msg.includes('good morning') || msg.includes('good afternoon')) {
+                response = "Hello! 👋 Great to see you!\n\nI'm your AI shopping assistant, ready to help with:\n\n• Account questions\n• Selling on our platform\n• Order tracking\n• Payment issues\n• Returns & refunds\n\nWhat would you like to know?";
+            }
+            
+            // Gratitude
+            else if (msg.includes('thank') || msg.includes('salamat') || msg.includes('thanks') || msg.includes('ty')) {
+                response = "You're very welcome! 😊 I'm glad I could help!\n\nIs there anything else you'd like to know? I'm here 24/7 to assist you with your shopping needs!";
+            }
+            
+            // Goodbye
+            else if (msg.includes('bye') || msg.includes('paalam') || msg.includes('exit') || msg.includes('quit')) {
+                response = "Goodbye! 👋 Thanks for chatting with me!\n\nFeel free to come back anytime you need help. Happy shopping at ShopEasy! 🛍️✨";
+            }
+            
+            // Hours/Contact
+            else if (msg.includes('hour') || msg.includes('time') || msg.includes('contact') || msg.includes('support') || msg.includes('help desk')) {
+                response = knowledgeBase.general.hours;
+            }
+            
+            // Shipping general
+            else if (msg.includes('ship') || msg.includes('deliver') || msg.includes('free shipping')) {
+                response = knowledgeBase.general.shipping;
+            }
+            
+            // Promos
+            else if (msg.includes('promo') || msg.includes('discount') || msg.includes('sale') || msg.includes('deal') || msg.includes('offer')) {
+                response = knowledgeBase.general.promo;
+            }
+            
+            // Default fallback with suggestions
+            else {
+                response = "I'm not quite sure about that, but I'm learning! 🤔\n\nI can help you with:\n\n• 📝 Creating an account\n• 🏪 Becoming a seller\n• 📦 Tracking orders\n• 💳 Payment issues\n• ↩️ Returns & refunds\n• 🎁 Current promotions\n\nCould you rephrase your question or pick one of these topics?";
+            }
+            
+            return response;
+        }
+
+        function appendMessage(text, className, time) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${className}`;
+            msgDiv.innerHTML = text.replace(/\n/g, '<br>') + `<span class="message-time">${time}</span>`;
+            chatWindow.insertBefore(msgDiv, typingBubble); 
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        // Welcome message with time
+        window.addEventListener('DOMContentLoaded', () => {
+            const welcomeMsg = document.querySelector('.bot-message .message-time');
+            if (welcomeMsg) welcomeMsg.textContent = getTime();
+        });
+    </script>
+</body>
+</html>

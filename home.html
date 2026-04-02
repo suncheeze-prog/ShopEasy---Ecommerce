@@ -1,0 +1,2533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShopEasy - Products</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+
+    /* Header */
+    header {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      padding: 15px 30px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .hamburger {
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: #667eea;
+      background: none;
+      border: none;
+      transition: transform 0.3s ease;
+    }
+
+    .hamburger:hover {
+      transform: rotate(90deg);
+    }
+
+    h1 {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+
+    .bell-container {
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .bell-container:hover {
+      transform: scale(1.1);
+    }
+
+    .bell-icon {
+      font-size: 1.5rem;
+      color: #667eea;
+    }
+
+    .notification-badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+      border-radius: 50%;
+      font-size: 0.7rem;
+      padding: 3px 6px;
+      font-weight: 600;
+      display: none;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    /* Navigation */
+    .nav-container {
+      display: flex;
+      gap: 25px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .nav-container a {
+      color: #333;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .nav-container a::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      transition: width 0.3s ease;
+    }
+
+    .nav-container a:hover::after {
+      width: 100%;
+    }
+
+    .nav-container a:hover {
+      color: #667eea;
+    }
+
+    #logout-btn {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(245, 87, 108, 0.3);
+    }
+
+    #logout-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(245, 87, 108, 0.4);
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -280px;
+      width: 280px;
+      height: 100%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 30px 20px;
+      transition: left 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      z-index: 1000;
+      box-shadow: 5px 0 20px rgba(0, 0, 0, 0.3);
+      overflow-y: auto;
+    }
+
+    .sidebar.active {
+      left: 0;
+    }
+
+    .sidebar h2 {
+      font-size: 1.5rem;
+      margin-bottom: 30px;
+      text-align: center;
+      padding-bottom: 15px;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .sidebar a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      margin: 15px 0;
+      padding: 12px 15px;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+
+    .sidebar a:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateX(5px);
+    }
+
+    /* Hidden menu items based on role */
+    .sidebar a.hidden {
+      display: none;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .close-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: rotate(90deg);
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(5px);
+      display: none;
+      z-index: 900;
+    }
+
+    .overlay.show {
+      display: block;
+    }
+
+    /* Filter Sidebar */
+    #filterSidebar {
+      position: fixed;
+      top: 100px;
+      left: -350px;
+      width: 320px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 0 20px 20px 0;
+      box-shadow: 5px 0 30px rgba(0, 0, 0, 0.2);
+      transition: left 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      z-index: 999;
+      padding: 30px 25px;
+      max-height: calc(100vh - 120px);
+      overflow-y: auto;
+    }
+
+    #filterSidebar h2 {
+      text-align: center;
+      font-size: 1.4rem;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    #filterSidebar label {
+      font-weight: 600;
+      color: #333;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    #filterSidebar input,
+    #filterSidebar select {
+      width: 100%;
+      padding: 12px 15px;
+      border-radius: 10px;
+      border: 2px solid #e0e0e0;
+      margin-bottom: 20px;
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.3s ease;
+    }
+
+    #filterSidebar input:focus,
+    #filterSidebar select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    #filterSidebar button {
+      width: 100%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      font-weight: 600;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    #filterSidebar button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .filter-btn {
+      position: fixed;
+      top: 150px;
+      left: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+      z-index: 1000;
+      transition: all 0.3s ease;
+    }
+
+    .filter-btn:hover {
+      transform: scale(1.1) rotate(90deg);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+    }
+
+    /* Main Content */
+    main {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .search-area {
+      text-align: center;
+      margin-bottom: 40px;
+      animation: fadeInDown 0.6s ease;
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .search-area input,
+    .search-area select {
+      padding: 15px 20px;
+      border-radius: 25px;
+      border: none;
+      margin: 5px;
+      font-family: 'Poppins', sans-serif;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .search-area input {
+      width: 300px;
+    }
+
+    .search-area input:focus,
+    .search-area select:focus {
+      outline: none;
+      box-shadow: 0 8px 30px rgba(102, 126, 234, 0.3);
+      transform: translateY(-2px);
+    }
+
+    /* Product Grid */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 30px;
+      animation: fadeIn 0.8s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .product {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      overflow: hidden;
+    }
+
+    .product::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .product:hover::before {
+      opacity: 1;
+    }
+
+    .product:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 20px 50px rgba(102, 126, 234, 0.3);
+    }
+
+    .product img {
+      width: 100%;
+      height: 220px;
+      border-radius: 15px;
+      object-fit: cover;
+      margin-bottom: 15px;
+      transition: transform 0.4s ease;
+    }
+
+    .product:hover img {
+      transform: scale(1.05);
+    }
+
+    .product h3 {
+      color: #333;
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .product p {
+      color: #666;
+      margin: 8px 0;
+      font-size: 0.9rem;
+    }
+
+    .product .price {
+      color: #667eea;
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin: 15px 0;
+    }
+
+    .product button:not(.wishlist-btn) {
+      width: 100%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+      position: relative;
+      z-index: 10;
+    }
+
+    .product button:not(.wishlist-btn):hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    /* Buy Now & Add to Cart Buttons */
+    .product-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .btn-add-cart {
+      flex: 1;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+      position: relative;
+      z-index: 10;
+      font-size: 0.9rem;
+    }
+
+    .btn-add-cart:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-buy-now {
+      flex: 1;
+      background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(67, 233, 123, 0.3);
+      position: relative;
+      z-index: 10;
+      font-size: 0.9rem;
+    }
+
+    .btn-buy-now:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(67, 233, 123, 0.4);
+      background: linear-gradient(135deg, #38f9d7 0%, #43e97b 100%);
+    }
+
+    .wishlist-btn {
+      position: absolute;
+      top: 30px;
+      right: 30px;
+      background: white;
+      border: none;
+      color: #ff6b6b;
+      font-size: 1.5rem;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+
+    .wishlist-btn:hover {
+      transform: scale(1.15);
+      box-shadow: 0 6px 20px rgba(255, 107, 107, 0.3);
+    }
+
+    .wishlist-btn.added {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+    }
+
+    /* Popup */
+    .cart-popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 35px;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      z-index: 1200;
+      text-align: center;
+      min-width: 350px;
+      animation: popupAppear 0.3s ease;
+    }
+
+    @keyframes popupAppear {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+
+    .cart-popup.show {
+      display: block;
+    }
+
+    .cart-popup h2 {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 15px;
+    }
+
+    .cart-popup input,
+    .cart-popup select {
+      padding: 12px 15px;
+      border-radius: 10px;
+      border: 2px solid #e0e0e0;
+      margin: 10px 0;
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.3s ease;
+    }
+
+    .cart-popup input:focus,
+    .cart-popup select:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .close-popup {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      padding: 12px 30px;
+      color: white;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      margin: 5px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .close-popup:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .low-stock-popup ul {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0;
+      text-align: left;
+    }
+
+    .low-stock-popup li {
+      padding: 12px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      margin: 8px 0;
+      border-left: 4px solid #f5576c;
+    }
+
+    /* Floating Ad */
+    .spin-ad {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 140px;
+      height: 170px;
+      z-index: 9999;
+      cursor: pointer;
+      animation: float 3s ease-in-out infinite;
+      transition: all 0.3s ease;
+    }
+
+    .spin-ad:hover {
+      transform: scale(1.05);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-15px); }
+    }
+
+    .spin-ad img {
+      width: 100%;
+      height: auto;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .spin-ad .close-btn {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 28px;
+      height: 28px;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+    }
+
+    /* ===================== */
+    /* AI CHATBOT FLOATING BUTTON */
+    /* ===================== */
+    .ai-chatbot-btn {
+      position: fixed;
+      bottom: 220px;
+      right: 30px;
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+      z-index: 9998;
+      transition: all 0.3s ease;
+      animation: pulse-glow 2s infinite;
+    }
+
+    .ai-chatbot-btn:hover {
+      transform: scale(1.1) rotate(10deg);
+      box-shadow: 0 12px 35px rgba(102, 126, 234, 0.6);
+    }
+
+    .ai-chatbot-btn i {
+      font-size: 2rem;
+      color: white;
+      animation: bounce-icon 2s infinite;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% {
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+      }
+      50% {
+        box-shadow: 0 8px 35px rgba(102, 126, 234, 0.7);
+      }
+    }
+
+    @keyframes bounce-icon {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-5px);
+      }
+    }
+
+    .ai-badge-notification {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: #ff4757;
+      color: white;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      animation: pulse 1.5s infinite;
+    }
+
+    /* ===================== */
+    /* AI CHATBOX */
+    /* ===================== */
+    .ai-chatbox {
+      position: fixed;
+      bottom: 310px;
+      right: 30px;
+      width: 400px;
+      height: 550px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+      display: none;
+      flex-direction: column;
+      z-index: 9997;
+      overflow: hidden;
+      animation: slideUp 0.3s ease;
+    }
+
+    .ai-chatbox.show {
+      display: flex;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .chatbox-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .chatbox-header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .bot-avatar-sm {
+      width: 40px;
+      height: 40px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+    }
+
+    .chatbox-title h4 {
+      font-size: 1rem;
+      margin-bottom: 3px;
+    }
+
+    .chatbox-title p {
+      font-size: 0.75rem;
+      opacity: 0.9;
+    }
+
+    .chatbox-close {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .chatbox-close:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: rotate(90deg);
+    }
+
+    .chatbox-messages {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      background: #f8f9fa;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .chat-message {
+      max-width: 80%;
+      padding: 12px 16px;
+      border-radius: 15px;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .chat-message.bot {
+      background: white;
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .chat-message.user {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+
+    .chatbox-input-area {
+      padding: 15px;
+      background: white;
+      border-top: 1px solid #e9ecef;
+      display: flex;
+      gap: 10px;
+    }
+
+    .chatbox-input-area input {
+      flex: 1;
+      padding: 12px 15px;
+      border: 2px solid #e9ecef;
+      border-radius: 25px;
+      outline: none;
+      font-size: 0.9rem;
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.3s ease;
+    }
+
+    .chatbox-input-area input:focus {
+      border-color: #764ba2;
+      box-shadow: 0 0 0 3px rgba(118, 75, 162, 0.1);
+    }
+
+    .chatbox-send-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      color: white;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    .chatbox-send-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+    }
+
+    .typing-dots {
+      display: none;
+      padding: 12px 16px;
+      background: white;
+      border-radius: 15px;
+      width: fit-content;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .typing-dots.show {
+      display: block;
+    }
+
+    .typing-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: #764ba2;
+      border-radius: 50%;
+      margin: 0 3px;
+      animation: typing-bounce 1.3s infinite;
+    }
+
+    .typing-dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .typing-dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes typing-bounce {
+      0%, 60%, 100% {
+        transform: translateY(0);
+      }
+      30% {
+        transform: translateY(-8px);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .ai-chatbox {
+        width: calc(100% - 40px);
+        right: 20px;
+        left: 20px;
+        bottom: 310px;
+      }
+    }
+
+    /* Footer */
+    footer {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 60px 30px 30px;
+      margin-top: 80px;
+      border-radius: 50px 50px 0 0;
+    }
+
+    footer a {
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    footer a:hover {
+      color: white;
+      transform: translateX(5px);
+    }
+
+    footer h3 {
+      margin-bottom: 20px;
+      font-size: 1.2rem;
+    }
+
+    .footer-grid {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 40px;
+    }
+
+    .footer-grid ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .footer-grid li {
+      margin: 10px 0;
+    }
+
+    .social-icons {
+      display: flex;
+      gap: 15px;
+      font-size: 1.5rem;
+    }
+
+    .social-icons a {
+      transition: all 0.3s ease;
+    }
+
+    .social-icons a:hover {
+      transform: translateY(-5px) scale(1.2);
+      color: #ffd700;
+    }
+
+    .footer-bottom {
+      text-align: center;
+      margin-top: 40px;
+      padding-top: 30px;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* Profile Button */
+    .profile-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .profile-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .profile-btn img {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid white;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav-container {
+        display: none;
+      }
+
+      .product-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 20px;
+      }
+
+      .search-area input {
+        width: 100%;
+        max-width: 280px;
+      }
+
+      h1 {
+        font-size: 1.4rem;
+      }
+    }
+#loader-wrapper {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    /* Ginagamit ang gradient mo para bumagay sa theme */
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 10000;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+.loader-content {
+    text-align: center;
+}
+
+#loading-video {
+    width: 250px; /* Adjust size base sa trip mo */
+    height: auto;
+    /* DITO ANG MAGIC: Tinatanggal nito ang black background ng video */
+    mix-blend-mode: screen; 
+    filter: brightness(1.2); /* Optional: Para mas lalong kuminang ang cart */
+}
+
+#loading-text {
+    font-family: 'Poppins', sans-serif;
+    color: white;
+    font-weight: 500;
+    margin-top: -20px; /* I-adjust kung masyadong malayo sa video */
+    letter-spacing: 1px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.loader-hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes bounce {
+    from { transform: translate(-50%, -45%); }
+    to { transform: translate(-50%, -60%); }
+}
+
+#loading-text {
+    color: white;
+    font-weight: 500;
+    letter-spacing: 1px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.loader-hidden {
+    opacity: 0;
+    visibility: hidden;
+}
+
+  </style>
+</head>
+<body>
+
+<div id="loader-wrapper">
+    <div class="loader-content">
+        <video autoplay muted loop playsinline id="loading-video">
+            <source src="img/Shopping Cart Loader.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <p id="loading-text">Fetching your items...</p>
+    </div>
+</div>
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <button class="close-btn" onclick="toggleSidebar()">✕</button>
+    <h2>🛠️ Menu</h2>
+    
+    <!-- Common for all roles -->
+    <a href="home.html"><i class="fas fa-home"></i> Home</a>
+    
+    <!-- Seller & Admin only -->
+    <a href="addproduct.html" class="role-seller role-admin">
+      <i class="fas fa-plus-circle"></i> Add Product
+    </a>
+    
+    <!-- Common for all -->
+    <a href="products.html"><i class="fas fa-box"></i> Products</a>
+    
+    <!-- Seller & Admin only -->
+    <a href="inventory.html" class="role-seller role-admin">
+      <i class="fas fa-warehouse"></i> Inventory
+    </a>
+    
+    <!-- Seller & Admin only -->
+    <a href="delivery.html" class="role-seller role-admin">
+      <i class="fas fa-truck"></i> Delivery
+    </a>
+    
+    <!-- Seller & Admin only -->
+    <a href="sales.html" class="role-seller role-admin">
+      <i class="fas fa-chart-line"></i> Sales
+    </a>
+    
+    <!-- Common for all -->
+    <a href="purchased.html"><i class="fas fa-receipt"></i> Purchased</a>
+    
+    <!-- Common for all -->
+    <a href="vat.html"><i class="fas fa-file-invoice-dollar"></i> VAT</a>
+    
+    <!-- Admin only -->
+    <a href="user.html" class="role-admin">
+      <i class="fas fa-user-plus"></i> Create Account
+    </a>
+    
+    <!-- Admin only -->
+    <a href="selleraccount.html" class="role-admin">
+      <i class="fa-solid fa-store"></i> Seller Create Account
+    </a>
+    
+<!-- Admin only -->
+    <a href="admin-order.html" class="role-admin">
+      <i class="fa-solid fa-clipboard-list"></i> Admin Orders
+    </a>
+
+    <!-- Common for all -->
+    <a href="delivery-tracking.html">
+      <i class="fa-solid fa-truck"></i> Track Your Delivery
+    </a>
+  </div>
+
+  <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="header-container">
+      <div class="header-left">
+        <button class="hamburger" onclick="toggleSidebar()">☰</button>
+        <div class="bell-container" onclick="showLowStockPopup()">
+          <i class="fas fa-bell bell-icon"></i>
+          <span class="notification-badge" id="notification-badge">0</span>
+        </div>
+        <h1>🛍️ ShopEasy</h1>
+      </div>
+      <nav class="nav-container">
+        <a href="home.html">Home</a>
+        <a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart (<span id="cart-count">0</span>)</a>
+        <a href="wishlist.html"><i class="fas fa-heart"></i> Wishlist (<span id="wishlist-count">0</span>)</a>
+        <button class="profile-btn" onclick="toggleProfileSidebar()">
+          <img id="headerProfilePic" src="https://via.placeholder.com/35" alt="Profile">
+          <span id="headerUsername">My Profile</span>
+        </button>
+        <button id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Profile Sidebar -->
+  <div id="profile-sidebar" style="
+    position: fixed;
+    top: 0;
+    right: -350px;
+    width: 300px;
+    height: 100%;
+    background: white;
+    box-shadow: -4px 0 20px rgba(0,0,0,0.2);
+    padding: 20px;
+    transition: right 0.3s;
+    z-index: 1000;
+    overflow-y: auto;
+  ">
+    <button onclick="toggleProfileSidebar()" style="float:right; background:none; border:none; font-size:1.5rem; cursor:pointer;">✖️</button>
+    <div style="text-align:center; margin-top:30px;">
+      <img id="sidebarProfilePic" src="https://via.placeholder.com/100" style="border-radius:50%; width:100px; height:100px; object-fit:cover;">
+      <h3 id="sidebarFullName">Full Name</h3>
+      <p id="sidebarUsername">@username</p>
+      <p id="sidebarEmail">Email</p>
+      <p id="sidebarPhone">Contact</p>
+      <p id="sidebarAddress">Address</p>
+      <p id="sidebarGender">Gender</p>
+      <p id="sidebarBirthdate">Birthdate</p>
+    </div>
+  </div>
+
+  <!-- Filter Sidebar -->
+  <div id="filterSidebar">
+    <h2><i class="fas fa-filter"></i> Filters</h2>
+    <label>Search Product</label>
+    <input type="text" id="sideSearch" placeholder="Search..." oninput="searchProductsSidebar()">
+    <label>Filter by Category</label>
+    <select id="sideCategoryFilter" onchange="filterByCategorySidebar()">
+      <option value='all'>All Categories</option>
+    </select>
+    <button onclick="toggleFilterSidebar()">Close Filters</button>
+  </div>
+
+  <button class="filter-btn" onclick="toggleFilterSidebar()">
+    <i class="fas fa-sliders-h"></i>
+  </button>
+
+  <!-- Floating Ad -->
+  <div id="spinAd" class="spin-ad">
+    <button class="close-btn" onclick="closeAd()">✕</button>
+    <img src="img/golden spin wheel_4199603.png" alt="Spin & Win" onerror="this.src='https://via.placeholder.com/140x170/667eea/ffffff?text=Spin+%26+Win'">
+  </div>
+
+  <!-- AI Chatbot Floating Button -->
+  <div class="ai-chatbot-btn" onclick="toggleChatbox()">
+    <i class="fas fa-robot"></i>
+    <span class="ai-badge-notification">AI</span>
+  </div>
+
+  <!-- AI Chatbox -->
+  <div class="ai-chatbox" id="aiChatbox">
+    <div class="chatbox-header">
+      <div class="chatbox-header-left">
+        <div class="bot-avatar-sm">🤖</div>
+        <div class="chatbox-title">
+          <h4>ShopEasy Assistant</h4>
+          <p>Online • AI Powered</p>
+        </div>
+      </div>
+      <button class="chatbox-close" onclick="toggleChatbox()">✕</button>
+    </div>
+
+    <div class="chatbox-messages" id="chatboxMessages">
+      <div class="chat-message bot">
+        👋 Hi! I'm your AI shopping assistant. How can I help you today?
+      </div>
+      <div class="typing-dots" id="typingDots">
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+      </div>
+    </div>
+
+    <div class="chatbox-input-area">
+      <input type="text" id="chatInput" placeholder="Type your message..." onkeypress="handleChatKeyPress(event)">
+      <button class="chatbox-send-btn" onclick="sendChatMessage()">
+        <i class="fas fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main>
+    <div class="search-area">
+      <input type="text" id="searchBar" placeholder="🔍 Search for products..." oninput="searchProducts()">
+      <select id="categoryFilter" onchange="filterByCategory()">
+        <option value="all">All Categories</option>
+      </select>
+    </div>
+
+    <div class="product-grid" id="product-grid"></div>
+  </main>
+
+  <!-- Popup -->
+  <div id="cart-popup" class="cart-popup"></div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-grid">
+      <div>
+        <h3>Customer Service</h3>
+        <ul>
+          <li><a href="helpcentre.html">Help Centre</a></li>
+          <li><a href="#">Payment Methods</a></li>
+          <li><a href="#">Return & Refund</a></li>
+          <li><a href="guarantee.html">ShopEasy Guarantee</a></li>
+          <li><a href="contactus.html">Contact Us</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3>About ShopEasy</h3>
+        <ul>
+          <li><a href="aboutus.html">About Us</a></li>
+          <li><a href="careers.html">Careers</a></li>
+          <li><a href="blog.html">Blog</a></li>
+          <li><a href="privacypolicy.html">Privacy Policy</a></li>
+          <li><a href="termscondition.html">Terms & Conditions</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3>Follow Us</h3>
+        <div class="social-icons">
+          <a href="#"><i class="fab fa-facebook"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-linkedin"></i></a>
+          <a href="#"><i class="fab fa-tiktok"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2025 <strong>ShopEasy</strong> | All Rights Reserved</p>
+      <p style="font-size: 0.85rem; margin-top: 10px; opacity: 0.8;">Philippines | Singapore | Malaysia | Indonesia | Thailand | Vietnam</p>
+    </div>
+  </footer>
+
+<script>
+
+// 1. Itago ang loader kapag fully loaded na ang page
+window.addEventListener("load", () => {
+    const loader = document.getElementById("loader-wrapper");
+    
+    // Bigyan ng 1.5 to 2 seconds para makita ang cool animation
+    setTimeout(() => {
+        loader.classList.add("loader-hidden");
+    }, 1800); 
+});
+
+// I-trigger din kapag nag-click sa mga sidebar links
+document.querySelectorAll('.sidebar a, .nav-container a').forEach(link => {
+    link.addEventListener('click', function(e) {
+        const destination = this.getAttribute('href');
+        if (destination && destination.includes('.html') && !this.target) {
+            document.getElementById("loader-wrapper").classList.remove("loader-hidden");
+        }
+    });
+});
+
+// =====================
+// ROLE-BASED MENU VISIBILITY
+// =====================
+function initRoleBasedMenu() {
+  const role = localStorage.getItem("role") || "buyer"; // Default to buyer if no role
+  console.log("👤 User role:", role);
+  
+  const sidebar = document.getElementById("sidebar");
+  const menuItems = sidebar.querySelectorAll("a[class*='role-']");
+  
+  menuItems.forEach(item => {
+    const classes = item.className.split(' ');
+    let shouldShow = false;
+    
+    // Check if user's role matches any of the item's role classes
+    classes.forEach(cls => {
+      if (cls === `role-${role}`) {
+        shouldShow = true;
+      }
+    });
+    
+    // Hide/show based on role
+    if (!shouldShow && item.className.includes('role-')) {
+      item.classList.add('hidden');
+    } else {
+      item.classList.remove('hidden');
+    }
+  });
+  
+  console.log("✅ Menu visibility updated based on role:", role);
+}
+
+// =====================
+// GLOBAL STATE
+// =====================
+let products = [];
+let cart = [];
+let wishlist = [];
+
+// =====================
+// SIDEBAR / UI
+// =====================
+function toggleSidebar() {
+  document.getElementById("sidebar").classList.toggle("active");
+  document.getElementById("overlay").classList.toggle("show");
+}
+
+function toggleFilterSidebar() {
+  const sidebar = document.getElementById("filterSidebar");
+  sidebar.style.left = sidebar.style.left === "0px" ? "-350px" : "0px";
+}
+
+function updateCartCount() {
+  document.getElementById("cart-count").textContent = cart.length;
+}
+
+function updateWishlistCount() {
+  document.getElementById("wishlist-count").textContent = wishlist.length;
+}
+
+function closeAd() {
+  document.getElementById("spinAd").style.display = "none";
+}
+
+function toggleProfileSidebar() {
+  const sidebar = document.getElementById("profile-sidebar");
+  if (!sidebar) return;
+
+  if (sidebar.style.right === "0px") {
+    sidebar.style.right = "-350px";
+  } else {
+    sidebar.style.right = "0px";
+    loadUserProfile();
+  }
+}
+
+// =====================
+// LOAD USER PROFILE
+// =====================
+async function loadUserProfile() {
+  const userId = localStorage.getItem("userId");
+  if (!userId) return console.warn("❌ No user logged in");
+
+  try {
+    const response = await fetch(`http://localhost:4000/api/users/${userId}`);
+    const data = await response.json();
+
+    if (!data.success || !data.user) return console.warn("❌ User not found or API error");
+
+    const user = data.user;
+    const avatarImg = user.profilePicture || "https://via.placeholder.com/130/667eea/ffffff?text=No+Image";
+    const headerImg = user.profilePicture || "https://via.placeholder.com/35/667eea/ffffff?text=?";
+
+    const sidebarProfilePicEl = document.getElementById("sidebarProfilePic");
+    const sidebarFullNameEl = document.getElementById("sidebarFullName");
+    const sidebarUsernameEl = document.getElementById("sidebarUsername");
+    const sidebarEmailEl = document.getElementById("sidebarEmail");
+    const sidebarPhoneEl = document.getElementById("sidebarPhone");
+    const sidebarAddressEl = document.getElementById("sidebarAddress");
+    const sidebarGenderEl = document.getElementById("sidebarGender");
+    const sidebarBirthdateEl = document.getElementById("sidebarBirthdate");
+
+    if (sidebarProfilePicEl) sidebarProfilePicEl.src = avatarImg;
+    if (sidebarFullNameEl) sidebarFullNameEl.textContent = user.fullName || "";
+    if (sidebarUsernameEl) sidebarUsernameEl.textContent = user.username ? "@" + user.username : "";
+    if (sidebarEmailEl) sidebarEmailEl.textContent = user.email || "";
+    if (sidebarPhoneEl) sidebarPhoneEl.textContent = user.phone || "";
+    if (sidebarAddressEl) sidebarAddressEl.textContent = user.address || "";
+    if (sidebarGenderEl) sidebarGenderEl.textContent = user.gender || "";
+    if (sidebarBirthdateEl) sidebarBirthdateEl.textContent = user.birthdate ? new Date(user.birthdate).toLocaleDateString() : "";
+
+    const headerProfilePicEl = document.getElementById("headerProfilePic");
+    const headerUsernameEl = document.getElementById("headerUsername");
+
+    if (headerProfilePicEl) headerProfilePicEl.src = headerImg;
+    if (headerUsernameEl) headerUsernameEl.textContent = user.fullName || "";
+
+    console.log("✅ Profile loaded successfully");
+
+  } catch (error) {
+    console.error("❌ Error fetching user profile:", error);
+  }
+}
+
+// =====================
+// ADD TO CART
+// =====================
+async function confirmAddToCart(name) {
+  const userId = localStorage.getItem("userId");
+  
+  if (!userId) {
+    return showPopup("❌ Error", "Please login first!");
+  }
+
+  const product = products.find(p => p.name === name);
+  if (!product) return;
+
+  const qty = parseInt(document.getElementById("popupQty").value);
+  const sizeSelect = document.getElementById("popupSizeSelect");
+  const size = sizeSelect ? sizeSelect.value : "—";
+  const price = product.prices && product.prices[size] ? Number(product.prices[size]) : 0;
+
+  if (product.quantity < qty) {
+    return showPopup("❌ Out of Stock", "Only " + product.quantity + " left!");
+  }
+
+  const cartItem = {
+    userId: userId,
+    productId: product._id,
+    name: product.name,
+    image: product.image,
+    size: size,
+    selectedPrice: price,
+    orderQty: qty,
+    vat: 12,
+  };
+
+  try {
+    const response = await fetch("http://localhost:4000/api/cart/add", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(cartItem)
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      product.quantity -= qty;
+      localStorage.setItem("products", JSON.stringify(products));
+
+      cart = data.items;
+      updateCartCount();
+      checkLowStock();
+      
+      showPopup("✅ Added to Cart", product.name + " ×" + qty + " added!");
+      closePopup();
+      renderProducts();
+    } else {
+      showPopup("❌ Error", data.message || "Failed to add to cart");
+    }
+  } catch (error) {
+    console.error("❌ Fetch error:", error);
+    showPopup("❌ Error", "Failed to add to cart");
+  }
+}
+
+// =====================
+// FETCH PRODUCTS FROM DB
+// =====================
+async function fetchProductsFromDB() {
+  try {
+    const res = await fetch("http://localhost:4000/api/products");
+    const data = await res.json();
+
+    products = data;
+    localStorage.setItem("products", JSON.stringify(products));
+    return products;
+
+  } catch (err) {
+    console.error("❌ Error fetching products:", err);
+    return [];
+  }
+}
+
+// =====================
+// POPUP
+// =====================
+function showPopup(title, message) {
+  const popup = document.getElementById("cart-popup");
+  popup.innerHTML = `
+    <h2>${title}</h2>
+    <p>${message}</p>
+    <button class="close-popup" onclick="closePopup()">Close</button>
+  `;
+  popup.classList.add("show");
+}
+
+function closePopup() {
+  document.getElementById("cart-popup").classList.remove("show");
+}
+
+function showLowStockPopup() {
+  const lowStock = JSON.parse(localStorage.getItem("lowStockProducts")) || [];
+  
+  if (lowStock.length === 0) {
+    showPopup("✅ All Good", "No low stock items!");
+    return;
+  }
+
+  const popup = document.getElementById("cart-popup");
+  popup.innerHTML = `
+    <div class="low-stock-popup">
+      <h2>⚠️ Low Stock Alert</h2>
+      <ul>
+        ${lowStock.map(p => `<li><strong>${p.name}</strong> - Only ${p.quantity} left!</li>`).join("")}
+      </ul>
+      <button class="close-popup" onclick="closePopup()">Close</button>
+    </div>
+  `;
+  popup.classList.add("show");
+}
+
+function addToCart(name, image, desc, rating, event) {
+  event.stopPropagation();
+
+  const product = products.find(p => p.name === name);
+  if (!product) return showPopup("❌ Error", "Product not found!");
+
+  const popup = document.getElementById("cart-popup");
+  const hasSizes = product.prices && Object.keys(product.prices).length > 0;
+
+  if (hasSizes) {
+    const sizeOptions = Object.entries(product.prices)
+      .filter(([_, price]) => price > 0)
+      .map(([size, price]) => "<option value='" + size + "'>" + size + " - ₱" + price + "</option>")
+      .join("");
+
+    popup.innerHTML = 
+      "<h2>Select Size & Quantity</h2>" +
+      "<p>Choose a size for <strong>" + name + "</strong>:</p>" +
+      "<select id='popupSizeSelect'>" + sizeOptions + "</select>" +
+      "<p>Quantity:</p>" +
+      "<input type='number' id='popupQty' min='1' value='1'>" +
+      "<button class='close-popup' onclick=\"confirmAddToCart('" + name + "')\">Add</button>" +
+      "<button class='close-popup' onclick='closePopup()'>Cancel</button>";
+  } else {
+    popup.innerHTML = 
+      "<h2>Add to Cart</h2>" +
+      "<p>Quantity:</p>" +
+      "<input type='number' id='popupQty' min='1' value='1'>" +
+      "<button class='close-popup' onclick=\"confirmAddToCart('" + name + "')\">Add</button>" +
+      "<button class='close-popup' onclick='closePopup()'>Cancel</button>";
+  }
+
+  popup.classList.add("show");
+}
+
+// =====================
+// LOAD CART & WISHLIST FROM DATABASE
+// =====================
+async function loadUserCartAndWishlist() {
+  const userId = localStorage.getItem("userId");
+  
+  if (!userId) {
+    console.log("⚠️ No user logged in");
+    cart = [];
+    wishlist = [];
+    updateCartCount();
+    updateWishlistCount();
+    return;
+  }
+
+  try {
+    const cartRes = await fetch("http://localhost:4000/api/cart/" + userId);
+    const cartData = await cartRes.json();
+    
+    if (cartData.success) {
+      cart = cartData.items || [];
+      updateCartCount();
+      console.log("✅ Cart loaded from database:", cart.length, "items");
+    } else {
+      cart = [];
+      updateCartCount();
+    }
+
+    const wishlistRes = await fetch("http://localhost:4000/api/wishlist/" + userId);
+    const wishlistData = await wishlistRes.json();
+    
+    if (wishlistData.success) {
+      wishlist = wishlistData.products || [];
+      updateWishlistCount();
+      console.log("✅ Wishlist loaded from database:", wishlist.length, "items");
+    } else {
+      wishlist = [];
+      updateWishlistCount();
+    }
+  } catch (error) {
+    console.error("❌ Error loading cart/wishlist:", error);
+    cart = [];
+    wishlist = [];
+    updateCartCount();
+    updateWishlistCount();
+  }
+}
+
+// =====================
+// WISHLIST
+// =====================
+async function toggleWishlist(event, index) {
+  event.stopPropagation();
+
+  const userId = localStorage.getItem("userId");
+  if (!userId) {
+    return showPopup("❌ Error", "Please login first!");
+  }
+
+  const product = products[index];
+  if (!product) return;
+
+  const found = wishlist.find(p => p._id === product._id);
+  const btn = event.currentTarget;
+
+  try {
+    if (!found) {
+      const response = await fetch("http://localhost:4000/api/wishlist/add", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: userId, productId: product._id })
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        wishlist = data.products;
+        btn.classList.add("added");
+        showPopup("❤️ Added", product.name + " added to wishlist");
+      }
+    } else {
+      const response = await fetch("http://localhost:4000/api/wishlist/remove/" + userId + "/" + product._id, {
+        method: "DELETE"
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        wishlist = data.products;
+        btn.classList.remove("added");
+        showPopup("💔 Removed", product.name + " removed from wishlist");
+      }
+    }
+
+    updateWishlistCount();
+  } catch (error) {
+    console.error("❌ Error updating wishlist:", error);
+    showPopup("❌ Error", "Failed to update wishlist");
+  }
+}
+
+// =====================
+// LOW STOCK
+// =====================
+function checkLowStock() {
+  const lowStock = products.filter(p => p.quantity <= 3);
+  const badge = document.getElementById("notification-badge");
+
+  if (lowStock.length > 0) {
+    badge.style.display = "inline";
+    badge.textContent = lowStock.length;
+    localStorage.setItem("lowStockProducts", JSON.stringify(lowStock));
+  } else {
+    badge.style.display = "none";
+  }
+}
+
+// =====================
+// SEARCH & FILTER
+// =====================
+function searchProducts() {
+  const term = document.getElementById("searchBar").value.toLowerCase();
+  const selected = document.getElementById("categoryFilter").value;
+
+  const result = products.filter(p => {
+    const matchCat = selected === "all" || p.category === selected;
+    const matchTerm =
+      p.name.toLowerCase().includes(term) ||
+      p.category.toLowerCase().includes(term);
+    return matchCat && matchTerm;
+  });
+
+  renderFilteredProducts(result);
+}
+
+function filterByCategory() {
+  const selected = document.getElementById("categoryFilter").value;
+  const term = document.getElementById("searchBar").value.toLowerCase();
+
+  const result = products.filter(p => {
+    const matchCat = selected === "all" || p.category === selected;
+    const matchTerm = 
+      p.name.toLowerCase().includes(term) ||
+      p.category.toLowerCase().includes(term);
+    return matchCat && matchTerm;
+  });
+
+  renderFilteredProducts(result);
+}
+
+function searchProductsSidebar() {
+  const term = document.getElementById("sideSearch").value.toLowerCase();
+  const selected = document.getElementById("sideCategoryFilter").value;
+
+  const result = products.filter(p => {
+    const matchCat = selected === "all" || p.category === selected;
+    const matchTerm =
+      p.name.toLowerCase().includes(term) ||
+      p.category.toLowerCase().includes(term);
+    return matchCat && matchTerm;
+  });
+
+  renderFilteredProducts(result);
+}
+
+function filterByCategorySidebar() {
+  const selected = document.getElementById("sideCategoryFilter").value;
+  const term = document.getElementById("sideSearch").value.toLowerCase();
+
+  const result = products.filter(p => {
+    const matchCat = selected === "all" || p.category === selected;
+    const matchTerm =
+      p.name.toLowerCase().includes(term) ||
+      p.category.toLowerCase().includes(term);
+    return matchCat && matchTerm;
+  });
+
+  renderFilteredProducts(result);
+}
+
+// =====================
+// RENDER FILTERED PRODUCTS
+// =====================
+// =====================
+// RENDER FILTERED PRODUCTS (UPDATED)
+// =====================
+function renderFilteredProducts(list) {
+  const grid = document.getElementById("product-grid");
+  grid.innerHTML = "";
+
+  if (list.length === 0) {
+    grid.innerHTML = `<p style="color:white;grid-column:1/-1;text-align:center;">😔 No products found</p>`;
+    return;
+  }
+
+  list.forEach((p, index) => {
+    const inWishlist = wishlist.find(item => item._id === p._id);
+
+    const priceDisplay = p.prices
+      ? Object.entries(p.prices)
+          .map(([size, price]) => `<span>${size}: ₱${price}</span>`)
+          .join("<br>")
+      : `<span class="price">₱${p.price}</span>`;
+
+    grid.innerHTML += `
+      <div class="product">
+        <button class="wishlist-btn ${inWishlist ? "added" : ""}" onclick="toggleWishlist(event, ${index})">
+          <i class="fa fa-heart"></i>
+        </button>
+        
+        <img src="${p.image}" alt="${p.name}" onclick="viewProduct('${p.name}')" style="cursor:pointer">
+        
+        <h3 onclick="viewProduct('${p.name}')" style="cursor:pointer">${p.name}</h3>
+        ${priceDisplay}
+        <p><strong>Category:</strong> ${p.category}</p>
+        <p><strong>Stock:</strong> ${p.quantity}</p>
+        
+        <div style="display: flex; gap: 10px; margin-top: 10px;">
+            <button style="flex: 1;" onclick="addToCart('${p.name}', '${p.image}', '${p.desc}', 5, event)">
+              <i class="fas fa-cart-plus"></i> Add
+            </button>
+
+            <button style="flex: 1; background: #667eea;" onclick="buyNow('${p.name}', event)">
+              <i class="fas fa-bolt"></i> Buy
+            </button>
+        </div>
+      </div>
+    `;
+  });
+}
+
+// =====================
+// NAVIGATION & BUY NOW
+// =====================
+
+// Kapag kinlick ang Buy Now o Image, dadalhin sa Product Details page
+function viewProduct(name) {
+  const product = products.find(p => p.name === name);
+  if (product) {
+    // Save selected product to local storage for the next page to use
+    localStorage.setItem("selectedProduct", JSON.stringify(product));
+    window.location.href = "productdescription.html"; // Siguraduhin na tama ang filename mo
+  }
+}
+
+function buyNow(name, event) {
+  event.stopPropagation(); // Para di mag-trigger ang ibang click events
+  viewProduct(name);
+}
+
+
+
+// =====================
+// CATEGORY OPTIONS
+// =====================
+function populateCategoryFilter() {
+  const mainSelect = document.getElementById("categoryFilter");
+  const sideSelect = document.getElementById("sideCategoryFilter");
+  const categories = [...new Set(products.map(p => p.category))];
+
+  const optionsHTML = 
+    `<option value="all">All Categories</option>` +
+    categories.map(c => `<option value="${c}">${c}</option>`).join("");
+
+  mainSelect.innerHTML = optionsHTML;
+  sideSelect.innerHTML = optionsHTML;
+}
+
+// =====================
+// RENDER PRODUCTS
+// =====================
+function renderProducts() {
+  renderFilteredProducts(products);
+  populateCategoryFilter();
+  checkLowStock();
+}
+
+// =====================
+// INITIAL LOAD
+// =====================
+document.addEventListener("DOMContentLoaded", async () => {
+  initRoleBasedMenu(); // ✅ Initialize role-based menu
+  await fetchProductsFromDB();
+  await loadUserProfile();
+  await loadUserCartAndWishlist();
+  renderProducts();
+});
+
+// =====================
+// LOGOUT
+// =====================
+document.getElementById("logout-btn").addEventListener("click", () => {
+  localStorage.removeItem("userId");
+  localStorage.removeItem("role");
+  localStorage.removeItem("username");
+  localStorage.removeItem("fullName");
+  
+  cart = [];
+  wishlist = [];
+  updateCartCount();
+  updateWishlistCount();
+  
+  console.log("✅ Logged out successfully");
+  
+  showPopup("👋 Goodbye!", "Logging out...");
+  
+  setTimeout(() => {
+    window.location.href = "login.html";
+  }, 800);
+});
+
+// =====================
+// ENHANCED AI CHATBOT WITH LOCKOUT SYSTEM
+// =====================
+
+// Enhanced profanity filter list with better categorization
+const profanityList = {
+  // Exact word matches (must be standalone words)
+  exact: [
+    // English
+    'fuck', 'shit', 'bitch', 'damn', 'bastard', 'dick', 'cock',
+    'pussy', 'cunt', 'whore', 'slut', 'piss', 'asshole', 'bullshit', 
+    'motherfucker', 'wtf', 'stfu', 'fck', 'fuk', 'nigga', 'nigger', 'faggot',
+    
+    // Tagalog
+    'gago', 'tarantado', 'ulol', 'bobo', 'tanga', 'hayop', 'peste',
+    'hudas', 'leche', 'puta', 'punyeta', 'pakshet', 'pakyu', 
+    'yawa', 'inutil', 'kupal', 'amputa', 'lintek', 'kantot', 'jakol',
+    'pokpok', 'tite', 'bilat', 'puki',
+    
+    // Variations
+    'fvck', 'fucc', 'sht', 'btch', 'asz', 'gag0', 'b0b0'
+  ],
+  
+  // Phrases that can appear anywhere
+  phrases: [
+    'putang ina', 'tangina', 'kingina', 'potangina', 'hinayupak', 
+    'putragis', 'walang hiya', 'tanginamo', 'tangina mo', 
+    'putanginamo', 't@ng@', 'p*ta', 'p0ta', 'tang ina'
+  ]
+};
+
+// Lockout system variables
+let warningCount = 0;
+let isLockedOut = false;
+let lockoutEndTime = null;
+let lockoutTimer = null;
+
+// Improved function to check for profanity with word boundaries
+function containsProfanity(text) {
+  const lowerText = text.toLowerCase();
+  
+  // Check exact words (with word boundaries)
+  for (let word of profanityList.exact) {
+    const regex = new RegExp(`\\b${word}\\b`, 'i');
+    if (regex.test(lowerText)) {
+      console.log(`⚠️ Profanity detected (exact): "${word}"`);
+      return true;
+    }
+  }
+  
+  // Check phrases
+  for (let phrase of profanityList.phrases) {
+    if (lowerText.includes(phrase)) {
+      console.log(`⚠️ Profanity detected (phrase): "${phrase}"`);
+      return true;
+    }
+  }
+  
+  // Check for spaced out versions
+  const spacedText = lowerText.replace(/\s+/g, '');
+  for (let word of profanityList.exact) {
+    const spacedWord = word.replace(/\s+/g, '');
+    if (spacedText.length >= 4 && spacedWord.length >= 4) {
+      if (spacedText.includes(spacedWord)) {
+        console.log(`⚠️ Profanity detected (spaced): "${word}"`);
+        return true;
+      }
+    }
+  }
+  
+  return false;
+}
+
+// Censor message
+function censorMessage(text) {
+  let censored = text;
+  
+  profanityList.exact.forEach(word => {
+    const regex = new RegExp(`\\b${word}\\b`, 'gi');
+    const replacement = word.length > 2 
+      ? word[0] + '*'.repeat(word.length - 2) + word[word.length - 1]
+      : '*'.repeat(word.length);
+    censored = censored.replace(regex, replacement);
+  });
+  
+  profanityList.phrases.forEach(phrase => {
+    const regex = new RegExp(phrase, 'gi');
+    const replacement = phrase[0] + '*'.repeat(phrase.length - 2) + phrase[phrase.length - 1];
+    censored = censored.replace(regex, replacement);
+  });
+  
+  return censored;
+}
+
+// Initialize lockout system on page load
+function initializeLockoutSystem() {
+  // Check if there's an existing lockout in localStorage
+  const storedLockout = localStorage.getItem('chatLockout');
+  
+  if (storedLockout) {
+    const lockoutData = JSON.parse(storedLockout);
+    const now = Date.now();
+    
+    if (now < lockoutData.endTime) {
+      // Still locked out
+      isLockedOut = true;
+      lockoutEndTime = lockoutData.endTime;
+      startLockoutTimer();
+      disableChatInput();
+    } else {
+      // Lockout expired, clear it
+      localStorage.removeItem('chatLockout');
+    }
+  }
+}
+
+// Start lockout (5 minutes)
+function startLockout() {
+  isLockedOut = true;
+  lockoutEndTime = Date.now() + (5 * 60 * 1000); // 5 minutes
+  
+  // Save to localStorage so it persists on page refresh
+  localStorage.setItem('chatLockout', JSON.stringify({
+    endTime: lockoutEndTime,
+    timestamp: Date.now()
+  }));
+  
+  // Disable input
+  disableChatInput();
+  
+  // Show lockout message
+  showLockoutMessage();
+  
+  // Start countdown timer
+  startLockoutTimer();
+  
+  // Auto-unlock after 5 minutes
+  setTimeout(() => {
+    endLockout();
+  }, 5 * 60 * 1000);
+}
+
+// Update lockout timer display
+function startLockoutTimer() {
+  updateLockoutDisplay();
+  
+  lockoutTimer = setInterval(() => {
+    const now = Date.now();
+    const remaining = lockoutEndTime - now;
+    
+    if (remaining <= 0) {
+      clearInterval(lockoutTimer);
+      endLockout();
+    } else {
+      updateLockoutDisplay();
+    }
+  }, 1000);
+}
+
+// Update the lockout countdown display
+function updateLockoutDisplay() {
+  const now = Date.now();
+  const remaining = Math.max(0, lockoutEndTime - now);
+  
+  const minutes = Math.floor(remaining / 60000);
+  const seconds = Math.floor((remaining % 60000) / 1000);
+  
+  const input = document.getElementById('chatInput');
+  if (input && isLockedOut) {
+    input.placeholder = `🔒 Locked for ${minutes}:${seconds.toString().padStart(2, '0')}`;
+  }
+}
+
+// End lockout
+function endLockout() {
+  isLockedOut = false;
+  lockoutEndTime = null;
+  warningCount = 0;
+  
+  // Clear localStorage
+  localStorage.removeItem('chatLockout');
+  
+  // Clear timer
+  if (lockoutTimer) {
+    clearInterval(lockoutTimer);
+    lockoutTimer = null;
+  }
+  
+  // Enable input
+  enableChatInput();
+  
+  // Show unlock message
+  showUnlockMessage();
+}
+
+// Disable chat input
+function disableChatInput() {
+  const input = document.getElementById('chatInput');
+  const sendBtn = document.querySelector('.chat-send-btn');
+  
+  if (input) {
+    input.disabled = true;
+    input.placeholder = '🔒 Chat locked for 5 minutes';
+    input.style.backgroundColor = '#f0f0f0';
+    input.style.cursor = 'not-allowed';
+  }
+  
+  if (sendBtn) {
+    sendBtn.disabled = true;
+    sendBtn.style.opacity = '0.5';
+    sendBtn.style.cursor = 'not-allowed';
+  }
+}
+
+// Enable chat input
+function enableChatInput() {
+  const input = document.getElementById('chatInput');
+  const sendBtn = document.querySelector('.chat-send-btn');
+  
+  if (input) {
+    input.disabled = false;
+    input.placeholder = 'Ask me anything about shopping...';
+    input.style.backgroundColor = 'white';
+    input.style.cursor = 'text';
+  }
+  
+  if (sendBtn) {
+    sendBtn.disabled = false;
+    sendBtn.style.opacity = '1';
+    sendBtn.style.cursor = 'pointer';
+  }
+}
+
+// Show lockout message
+function showLockoutMessage() {
+  const messagesDiv = document.getElementById('chatboxMessages');
+  const lockoutDiv = document.createElement('div');
+  lockoutDiv.className = 'chat-message bot lockout-message';
+  lockoutDiv.innerHTML = `
+    🚫 <strong>CHAT SESSION ENDED</strong>
+    
+    Due to repeated inappropriate language, this chat has been locked for <strong>5 minutes</strong>.
+    
+    ⏰ You can use the chat again at: <strong>${new Date(lockoutEndTime).toLocaleTimeString()}</strong>
+    
+    Please remember:
+    • Keep conversations respectful
+    • Use appropriate language
+    • Our AI is here to help you
+    
+    This conversation has been logged for review.
+  `;
+  lockoutDiv.style.backgroundColor = '#ffe6e6';
+  lockoutDiv.style.borderLeft = '4px solid #dc3545';
+  lockoutDiv.style.color = '#721c24';
+  lockoutDiv.style.fontWeight = '500';
+  
+  const typingDots = document.getElementById('typingDots');
+  messagesDiv.insertBefore(lockoutDiv, typingDots);
+  scrollChatToBottom();
+}
+
+// Show unlock message
+function showUnlockMessage() {
+  const messagesDiv = document.getElementById('chatboxMessages');
+  const unlockDiv = document.createElement('div');
+  unlockDiv.className = 'chat-message bot unlock-message';
+  unlockDiv.innerHTML = `
+    ✅ <strong>Chat Unlocked!</strong>
+    
+    Welcome back! The chat is now available again.
+    
+    Let's start fresh - how can I help you today? 😊
+  `;
+  unlockDiv.style.backgroundColor = '#d4edda';
+  unlockDiv.style.borderLeft = '4px solid #28a745';
+  unlockDiv.style.color = '#155724';
+  
+  const typingDots = document.getElementById('typingDots');
+  messagesDiv.insertBefore(unlockDiv, typingDots);
+  scrollChatToBottom();
+}
+
+function toggleChatbox() {
+  const chatbox = document.getElementById('aiChatbox');
+  chatbox.classList.toggle('show');
+  
+  if (chatbox.classList.contains('show')) {
+    if (!isLockedOut) {
+      document.getElementById('chatInput').focus();
+    }
+  }
+}
+
+function handleChatKeyPress(event) {
+  if (event.key === 'Enter' && !isLockedOut) {
+    sendChatMessage();
+  }
+}
+
+// Enhanced message sending with lockout system
+function sendChatMessage() {
+  // Check if locked out
+  if (isLockedOut) {
+    const input = document.getElementById('chatInput');
+    input.style.animation = 'shake 0.5s';
+    setTimeout(() => {
+      input.style.animation = '';
+    }, 500);
+    return;
+  }
+  
+  const input = document.getElementById('chatInput');
+  const message = input.value.trim();
+  
+  if (!message) return;
+  
+  // Check for profanity
+  const hasProfanity = containsProfanity(message);
+  
+  // Censor if needed
+  const displayMessage = hasProfanity ? censorMessage(message) : message;
+  
+  // Add user message
+  addChatMessage(displayMessage, 'user');
+  input.value = '';
+  
+  // Show typing indicator
+  const typingDots = document.getElementById('typingDots');
+  typingDots.classList.add('show');
+  scrollChatToBottom();
+  
+  // If profanity detected
+  if (hasProfanity) {
+    warningCount++;
+    console.log(`⚠️ Warning count: ${warningCount}/3`);
+    
+    setTimeout(() => {
+      typingDots.classList.remove('show');
+      
+      // Check if reached limit
+      if (warningCount >= 3) {
+        // LOCKOUT!
+        const finalWarning = `
+🚫 <strong>FINAL WARNING - CHAT LOCKED</strong>
+
+You have used inappropriate language <strong>3 times</strong>.
+
+This chat session is now <strong>LOCKED FOR 5 MINUTES</strong>.
+
+This is your 3rd violation. Please use this time to reflect on appropriate communication.
+        `;
+        addChatMessage(finalWarning, 'bot lockout-warning');
+        
+        // Start lockout after 2 seconds
+        setTimeout(() => {
+          startLockout();
+        }, 2000);
+        
+      } else {
+        // Show progressive warning
+        const warningResponse = getWarningResponse(warningCount);
+        addChatMessage(warningResponse, 'bot warning');
+      }
+      
+      scrollChatToBottom();
+    }, 1500);
+    
+  } else {
+    // Normal response
+    setTimeout(() => {
+      typingDots.classList.remove('show');
+      const response = getAIChatResponse(message);
+      addChatMessage(response, 'bot');
+      scrollChatToBottom();
+    }, 1500);
+  }
+}
+
+// Progressive warning system
+function getWarningResponse(count) {
+  if (count === 1) {
+    return `⚠️ <strong>Warning 1/3</strong>
+
+I noticed inappropriate language. Let's keep our conversation respectful so I can better assist you!
+
+How can I help with your shopping needs? 😊`;
+  } else if (count === 2) {
+    return `⚠️ <strong>Warning 2/3 - FINAL WARNING</strong>
+
+This is the second time I've detected inappropriate language.
+
+<strong>One more violation will lock this chat for 5 minutes.</strong>
+
+I'm here to help you professionally. What do you need assistance with? 🤝`;
+  }
+}
+
+function addChatMessage(text, sender) {
+  const messagesDiv = document.getElementById('chatboxMessages');
+  const messageDiv = document.createElement('div');
+  messageDiv.className = `chat-message ${sender}`;
+  
+  // Handle HTML content for warnings
+  if (sender.includes('warning') || sender.includes('lockout')) {
+    messageDiv.innerHTML = text.replace(/\n/g, '<br>');
+  } else {
+    messageDiv.textContent = text;
+  }
+  
+  // Special styling for warnings
+  if (sender.includes('warning')) {
+    messageDiv.style.backgroundColor = '#fff3cd';
+    messageDiv.style.borderLeft = '4px solid #ffc107';
+    messageDiv.style.color = '#856404';
+  }
+  
+  if (sender.includes('lockout-warning')) {
+    messageDiv.style.backgroundColor = '#ffe6e6';
+    messageDiv.style.borderLeft = '4px solid #dc3545';
+    messageDiv.style.color = '#721c24';
+    messageDiv.style.fontWeight = '500';
+  }
+  
+  const typingDots = document.getElementById('typingDots');
+  messagesDiv.insertBefore(messageDiv, typingDots);
+}
+
+function scrollChatToBottom() {
+  const messagesDiv = document.getElementById('chatboxMessages');
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+// Enhanced AI response system
+function getAIChatResponse(message) {
+  const msg = message.toLowerCase();
+  
+  // Order tracking
+  if (msg.includes('track') || msg.includes('nasaan') || msg.includes('where is')) {
+    if (msg.includes('how') || msg.includes('paano')) {
+      return "To track your order:\n\n1️⃣ Go to 'My Purchases'\n2️⃣ Click on your order\n3️⃣ View real-time tracking map\n\nYou'll see exactly where your package is! 📦📍";
+    }
+    return "You can track your order in real-time! Go to 'My Purchases' and click on your order to see the live tracking map. 📦🗺️";
+  }
+  
+  // Delivery time
+  else if (msg.includes('deliver') || msg.includes('shipping') || msg.includes('gaano katagal')) {
+    return "Delivery times:\n\n📍 Metro Manila: 2-3 days\n📍 Luzon: 3-5 days\n📍 Visayas/Mindanao: 5-7 days\n\n⚡ Express: 1-2 days (+₱99)\n🎁 FREE shipping on orders ₱500+";
+  }
+  
+  // Account
+  else if (msg.includes('account') || msg.includes('register') || msg.includes('sign up')) {
+    return "Creating an account is easy! ✨\n\n1️⃣ Click 'Sign Up'\n2️⃣ Enter email & password\n3️⃣ Verify email\n4️⃣ Complete profile\n\nTakes less than 2 minutes! 🚀";
+  }
+  
+  // Payment
+  else if (msg.includes('payment') || msg.includes('pay') || msg.includes('bayad')) {
+    return "We accept:\n\n💳 GCash\n💳 Maya\n💳 Credit/Debit Cards\n🏦 Bank Transfer\n💵 Cash on Delivery\n\nAll payments are 100% secure! 🔒";
+  }
+  
+  // Seller
+  else if (msg.includes('seller') || msg.includes('sell') || msg.includes('vendor')) {
+    return "Want to start selling? 🏪\n\n1️⃣ Go to Settings > 'Apply as Vendor'\n2️⃣ Upload valid ID\n3️⃣ Fill business details\n4️⃣ Wait 24-48hrs\n\n💡 No listing fees!";
+  }
+  
+  // Returns
+  else if (msg.includes('return') || msg.includes('refund') || msg.includes('balik')) {
+    return "Returns are easy!\n\n1️⃣ Go to 'My Purchases'\n2️⃣ Select order\n3️⃣ Click 'Return/Refund'\n\n⏰ Valid within 7 days\n💰 Refund in 5-10 business days ↩️";
+  }
+  
+  // Promos
+  else if (msg.includes('promo') || msg.includes('discount') || msg.includes('sale')) {
+    return "Current deals! 🎉\n\n🎁 New users: 20% off\n📦 FREE shipping on ₱500+\n🎂 Birthday: Extra 10% off\n⭐ Loyalty points on every purchase";
+  }
+  
+  // Greetings
+  else if (msg.includes('hi') || msg.includes('hello') || msg.includes('hey') || msg.includes('kamusta')) {
+    return "Hello! 👋 How can I help you with your shopping today?";
+  }
+  
+  // Thanks
+  else if (msg.includes('thank') || msg.includes('salamat')) {
+    return "You're welcome! 😊 Is there anything else you'd like to know?";
+  }
+  
+  // Goodbye
+  else if (msg.includes('bye') || msg.includes('paalam')) {
+    return "Goodbye! 👋 Come back anytime you need help. Happy shopping! 🛍️";
+  }
+  
+  // Default
+  else {
+    return "I can help with:\n\n• 📦 Order tracking\n• 💳 Payments\n• 🏪 Selling\n• ↩️ Returns\n• 🎁 Promos\n\nWhat would you like to know?";
+  }
+}
+
+// Add shake animation CSS (add this to your stylesheet)
+const shakeAnimation = `
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+`;
+
+// Initialize on page load
+window.addEventListener('DOMContentLoaded', () => {
+  initializeLockoutSystem();
+});
+
+// Test function
+function testProfanityFilter() {
+  const testCases = [
+    { text: "hello", shouldDetect: false },
+    { text: "hello world", shouldDetect: false },
+    { text: "shell", shouldDetect: false },
+    { text: "hello gago", shouldDetect: true },
+    { text: "tangina", shouldDetect: true }
+  ];
+  
+  console.log("🧪 Testing Profanity Filter:");
+  testCases.forEach(test => {
+    const result = containsProfanity(test.text);
+    const status = result === test.shouldDetect ? "✅" : "❌";
+    console.log(`${status} "${test.text}" | Expected: ${test.shouldDetect}, Got: ${result}`);
+  });
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account | ShopEasy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(-45deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 100%);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+      display: flex;
+      flex-direction: column;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    header {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 20px 0;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 30px;
+    }
+
+    h1 {
+      color: white;
+      font-size: 2rem;
+      font-weight: 700;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 25px;
+      font-weight: 500;
+      transition: all 0.3s;
+      position: relative;
+    }
+
+    nav a:after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: white;
+      transition: width 0.3s;
+    }
+
+    nav a:hover:after, nav a.active:after {
+      width: 100%;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    .register-container {
+      max-width: 550px;
+      margin: 0 auto;
+      padding: 45px 50px;
+      border-radius: 30px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.5);
+      animation: slideUp 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .register-container::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(118, 75, 162, 0.1), transparent);
+      animation: shimmer 3s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+
+    @keyframes slideUp {
+      from { 
+        opacity: 0; 
+        transform: translateY(40px) scale(0.95); 
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0) scale(1); 
+      }
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2.2rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 700;
+      position: relative;
+      z-index: 1;
+    }
+
+    .profile-container {
+      text-align: center;
+      margin-bottom: 30px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .profile-preview {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid transparent;
+      background: linear-gradient(white, white) padding-box,
+                  linear-gradient(135deg, #667eea, #764ba2) border-box;
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+      margin-bottom: 15px;
+      transition: all 0.4s;
+      cursor: pointer;
+    }
+
+    .profile-preview:hover {
+      transform: scale(1.08) rotate(5deg);
+      box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+    }
+
+    .upload-label {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 10px 25px;
+      border-radius: 25px;
+      color: white;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-block;
+      transition: all 0.3s;
+      font-weight: 600;
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .upload-label:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+    }
+
+    #profile-pic {
+      display: none;
+    }
+
+    .form-group {
+      position: relative;
+      margin-bottom: 25px;
+      z-index: 1;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #4a5568;
+      font-size: 0.9rem;
+      transition: all 0.3s;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 14px 18px;
+      border: 2px solid #e2e8f0;
+      border-radius: 15px;
+      font-size: 1rem;
+      transition: all 0.3s;
+      background: white;
+      font-family: inherit;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+      outline: none;
+      transform: translateY(-2px);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+
+    button {
+      padding: 16px;
+      width: 100%;
+      border: none;
+      border-radius: 15px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      font-size: 1.1rem;
+      cursor: pointer;
+      font-weight: 700;
+      transition: all 0.4s;
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.5s;
+    }
+
+    button:hover::before {
+      left: 100%;
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+    }
+
+    button:active {
+      transform: translateY(-1px);
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.95rem;
+      color: #4a5568;
+      position: relative;
+      z-index: 1;
+    }
+
+    .login-link a {
+      color: #667eea;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+
+    .login-link a:hover {
+      color: #764ba2;
+      text-decoration: underline;
+    }
+
+    .success-message, .error-message {
+      display: none;
+      padding: 15px 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      text-align: center;
+      font-weight: 600;
+      animation: slideDown 0.4s ease;
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes slideDown {
+      from { 
+        opacity: 0; 
+        transform: translateY(-10px); 
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0); 
+      }
+    }
+
+    .success-message { 
+      background: linear-gradient(135deg, #d4edda, #c3e6cb);
+      color: #155724;
+      border: 2px solid #28a745;
+    }
+
+    .error-message { 
+      background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+      color: #721c24;
+      border: 2px solid #dc3545;
+    }
+
+    footer {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      padding: 20px;
+      text-align: center;
+      color: white;
+      font-weight: 500;
+      margin-top: auto;
+    }
+
+    @media (max-width: 600px) {
+      .register-container {
+        padding: 35px 30px;
+        margin: 20px;
+      }
+
+      h2 {
+        font-size: 1.8rem;
+      }
+
+      .header-container {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      nav {
+        margin-top: 15px;
+      }
+
+      nav a {
+        margin: 0 10px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="header-container">
+    <h1>✨ ShopEasy</h1>
+    <nav>
+      <a href="home.html">Home</a>
+      <a href="login.html">Login</a>
+      <a href="#register" class="active">Create Account</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="register-container">
+
+    <h2>Create Your Account</h2>
+
+    <div class="profile-container">
+      <img id="profilePreview" class="profile-preview" src="https://via.placeholder.com/130/667eea/ffffff?text=Upload" alt="Profile Preview">
+      <br>
+      <label for="profile-pic" class="upload-label">📷 Upload Profile Picture</label>
+      <input type="file" id="profile-pic" accept="image/*">
+    </div>
+
+    <div class="success-message" id="success-msg">✅ Account created successfully!</div>
+    <div class="error-message" id="error-msg"></div>
+
+    <form id="register-form">
+
+      <div class="form-group">
+        <label>👤 Full Name</label>
+        <input type="text" id="name" required placeholder="Enter your full name">
+      </div>
+
+      <div class="form-group">
+        <label>🏷️ Username</label>
+        <input type="text" id="username" required placeholder="Choose a username">
+      </div>
+
+      <div class="form-group">
+        <label>📍 Address</label>
+        <textarea id="address" rows="2" required placeholder="Enter your address"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>📱 Contact Number</label>
+        <input type="text" id="contact" maxlength="11" required placeholder="09XXXXXXXXX" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+      </div>
+
+      <div class="form-group">
+        <label>📧 Email</label>
+        <input type="email" id="email" required placeholder="your.email@example.com">
+      </div>
+
+      <div class="form-group">
+        <label>🔒 Password</label>
+        <input type="password" id="password" required placeholder="Create a strong password">
+      </div>
+
+      <div class="form-group">
+        <label>⚧️ Gender</label>
+        <select id="gender" required>
+          <option value="">-- Select Gender --</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <link  href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
+<!-- Crop container -->
+<div id="crop-container" class="hidden" style="text-align:center; margin-bottom:20px; position:relative;">
+  <div style="position:relative; display:inline-block;">
+    <img id="crop-image" style="max-width:100%; border-radius:0;"/>
+    <!-- Circular overlay -->
+    <div style="
+      position:absolute;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      pointer-events:none;
+      border-radius:50%;
+      border:2px dashed #667eea;
+      box-sizing:border-box;
+    "></div>
+  </div>
+  <br>
+  <button type="button" id="crop-btn" style="margin-top:10px;">Crop Image</button>
+</div>
+
+
+
+
+
+
+      <div class="form-group">
+        <label>🎂 Birthdate</label>
+        <input type="date" id="birthdate" required>
+      </div>
+
+      <button type="submit">Create Account</button>
+    </form>
+
+    <div class="login-link">
+      Already have an account? <a href="login.html">Login here</a>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <p>© 2025 ShopEasy | All Rights Reserved</p>
+</footer>
+
+<script>
+  const form = document.getElementById("register-form");
+  const profileInput = document.getElementById("profile-pic");
+  const profilePreview = document.getElementById("profilePreview");
+
+  let profilePicBase64 = "";
+
+  // Preview uploaded image
+  profileInput.addEventListener("change", function () {
+    const file = this.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function () {
+      profilePreview.src = reader.result;
+      profilePicBase64 = reader.result;
+    };
+
+    if (file) reader.readAsDataURL(file);
+  });
+
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const fullName = document.getElementById("name").value.trim();
+    const username = document.getElementById("username").value.trim();
+    const address = document.getElementById("address").value.trim();
+    const phone = document.getElementById("contact").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const gender = document.getElementById("gender").value;
+    const birthdate = document.getElementById("birthdate").value;
+
+    const errorMsg = document.getElementById("error-msg");
+    const successMsg = document.getElementById("success-msg");
+    const submitBtn = form.querySelector("button[type='submit']");
+
+    // Hide previous messages
+    errorMsg.style.display = "none";
+    successMsg.style.display = "none";
+
+    // Client-side validation
+    if (!croppedImageData) {
+  errorMsg.textContent = "⚠️ Please upload and crop a profile picture.";
+  errorMsg.style.display = "block";
+  return;
+}
+
+
+    if (!fullName || !username || !address || !phone || !email || !password || !gender || !birthdate) {
+      errorMsg.textContent = "⚠️ Please fill out all fields.";
+      errorMsg.style.display = "block";
+      return;
+    }
+
+    const phonePattern = /^[0-9]+$/;
+    if (!phonePattern.test(phone)) {
+      errorMsg.textContent = "⚠️ Contact number must be digits only.";
+      errorMsg.style.display = "block";
+      return;
+    }
+
+    // Disable button during submission
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Creating Account...";
+
+    // SA LOOB NG form.addEventListener("submit", ...)
+
+// ... (ibang code)
+
+try {
+  const response = await fetch("http://localhost:4000/api/register", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      fullName,
+      username,
+      email,
+      phone,
+      address,
+      password,
+      gender,
+      birthdate,
+      // ❌ Dati: profilePicture: profilePicBase64 (Ito yung original na malaki!)
+      // ✅ Palitan nito:
+      profilePicture: croppedImageData 
+    })
+  });
+
+// ... (tuloy ang code)
+      const data = await response.json();
+
+      if (data.success) {
+        // Show success message
+        successMsg.textContent = "✅ " + data.message;
+        successMsg.style.display = "block";
+        errorMsg.style.display = "none";
+
+        // Reset form
+        form.reset();
+        profilePreview.src = "https://via.placeholder.com/130/667eea/ffffff?text=Upload";
+        profilePicBase64 = "";
+
+        // Redirect to login after 2 seconds
+        setTimeout(() => {
+          window.location.href = "login.html";
+        }, 2000);
+      } else {
+        // Show error message from server
+        errorMsg.textContent = "⚠️ " + data.message;
+        errorMsg.style.display = "block";
+        successMsg.style.display = "none";
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+      errorMsg.textContent = "❌ Connection error. Please make sure the server is running.";
+      errorMsg.style.display = "block";
+      successMsg.style.display = "none";
+    } finally {
+      // Re-enable button
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Create Account";
+    }
+  });
+
+  
+let cropper;
+let croppedImageData = "";
+
+profileInput.addEventListener("change", function () {
+  const file = this.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function () {
+    const cropContainer = document.getElementById("crop-container");
+    cropContainer.classList.remove("hidden");
+
+    const cropImage = document.getElementById("crop-image");
+    cropImage.src = reader.result;
+
+    if (cropper) cropper.destroy();
+
+    cropper = new Cropper(cropImage, {
+      aspectRatio: 1,        // Keep square for circle
+      viewMode: 1,
+      dragMode: "move",
+      movable: true,
+      zoomable: true,
+      rotatable: false,
+      scalable: false,
+      background: false,
+      guides: false,
+      modal: true,
+      autoCrop: true,
+      autoCropArea: 1,
+    });
+  };
+  reader.readAsDataURL(file);
+});
+
+document.getElementById("crop-btn").addEventListener("click", function () {
+  if (!cropper) return;
+
+  const canvas = cropper.getCroppedCanvas({ width: 200, height: 200 });
+  const circleCanvas = document.createElement("canvas");
+  circleCanvas.width = canvas.width;
+  circleCanvas.height = canvas.height;
+  const ctx = circleCanvas.getContext("2d");
+
+  // Circular mask
+  ctx.beginPath();
+  ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2, 0, Math.PI * 2);
+  ctx.closePath();
+  ctx.clip();
+
+  ctx.drawImage(canvas, 0, 0);
+
+  croppedImageData = circleCanvas.toDataURL("image/png");
+  profilePreview.src = croppedImageData;
+
+  document.getElementById("crop-container").classList.add("hidden");
+  cropper.destroy();
+  cropper = null;
+});
+
+
+
+</script>
+
+</body>
+</html>

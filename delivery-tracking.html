@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShopEasy - Track Your Order</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #764ba2;
+      --secondary: #667eea;
+      --glass: rgba(255, 255, 255, 0.9);
+      --success: #00b894;
+      --warning: #fdcb6e;
+      --info: #0984e3;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      color: #333;
+      padding-bottom: 50px;
+    }
+
+    header {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      padding: 20px 5%;
+      text-align: center;
+      color: white;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    header h1 { font-size: 1.8rem; font-weight: 600; margin-bottom: 10px; }
+    header nav { margin-top: 10px; }
+    header nav a { color: white; text-decoration: none; font-size: 0.9rem; transition: 0.3s; margin: 0 10px; }
+    header nav a:hover { opacity: 0.8; }
+
+    .container {
+      max-width: 950px;
+      margin: 40px auto;
+      background: var(--glass);
+      backdrop-filter: blur(10px);
+      padding: 35px;
+      border-radius: 30px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.5);
+    }
+
+    h2 { 
+      color: var(--primary); 
+      text-align: center; 
+      margin-bottom: 30px; 
+      font-weight: 600; 
+    }
+
+    /* Loading spinner */
+    .loading {
+      text-align: center;
+      padding: 50px;
+      color: var(--primary);
+    }
+
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid var(--secondary);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Card per Order */
+    .order-card {
+      background: white;
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      border-left: 6px solid var(--secondary);
+      transition: 0.3s;
+    }
+
+    .order-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 1px solid #f0f0f0;
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .order-info {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .product-name { 
+      font-weight: 600; 
+      color: #444; 
+      font-size: 1.1rem;
+      margin-bottom: 5px;
+    }
+
+    .order-details {
+      font-size: 0.85rem;
+      color: #666;
+      margin-top: 8px;
+    }
+
+    .order-details span {
+      display: inline-block;
+      margin-right: 15px;
+      margin-top: 3px;
+    }
+
+    .order-id { 
+      font-size: 0.75rem; 
+      color: #999; 
+      margin-top: 5px;
+    }
+
+    .order-meta {
+      text-align: right;
+    }
+
+    .order-amount {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 5px;
+    }
+
+    /* Tracking Steps Design */
+    .tracking-steps {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      margin: 30px 0;
+      padding: 0 10px;
+    }
+
+    .step {
+      text-align: center;
+      flex: 1;
+      position: relative;
+      z-index: 1;
+      font-size: 0.7rem;
+      color: #ccc;
+      transition: 0.3s;
+    }
+
+    .step i {
+      width: 40px;
+      height: 40px;
+      background: #f0f0f0;
+      border-radius: 50%;
+      line-height: 40px;
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+      transition: 0.3s;
+      display: inline-block;
+    }
+
+    .step.active { color: var(--primary); font-weight: 600; }
+    .step.active i { 
+      background: var(--secondary); 
+      color: white; 
+      box-shadow: 0 0 15px rgba(102, 126, 234, 0.5);
+      transform: scale(1.1);
+    }
+
+    .line {
+      position: absolute;
+      top: 20px;
+      left: 10%;
+      width: 80%;
+      height: 3px;
+      background: #f0f0f0;
+      z-index: 0;
+    }
+
+    .line-progress {
+      position: absolute;
+      top: 20px;
+      left: 10%;
+      height: 3px;
+      background: linear-gradient(90deg, var(--secondary), var(--primary));
+      z-index: 0;
+      transition: width 0.5s ease;
+    }
+
+    /* Status Label */
+    .status-badge {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: white;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .pending { background: var(--warning); }
+    .packed { background: var(--info); }
+    .shipped { background: var(--secondary); }
+    .out { background: #6c5ce7; }
+    .delivered { background: var(--success); }
+
+    /* Animations */
+    .truck-anim {
+      display: inline-block;
+      animation: drive 2s infinite ease-in-out;
+    }
+
+    @keyframes drive {
+      0% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      100% { transform: translateX(-5px); }
+    }
+
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.6; }
+      100% { opacity: 1; }
+    }
+
+    /* Empty state */
+    .empty-state { 
+      text-align: center; 
+      padding: 60px 20px; 
+      color: #777; 
+    }
+    
+    .empty-state i { 
+      font-size: 4rem; 
+      margin-bottom: 20px; 
+      opacity: 0.3; 
+      color: var(--primary);
+    }
+
+    .empty-state p {
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+    }
+
+    .empty-state a {
+      display: inline-block;
+      background: linear-gradient(45deg, var(--secondary), var(--primary));
+      color: white;
+      padding: 12px 30px;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    .empty-state a:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(118, 75, 162, 0.3);
+    }
+
+    footer { 
+      text-align: center; 
+      padding: 20px; 
+      color: white; 
+      font-size: 0.8rem; 
+      opacity: 0.8; 
+    }
+
+    @media (max-width: 768px) {
+      .order-header {
+        flex-direction: column;
+      }
+      .order-meta {
+        text-align: left;
+      }
+      .step {
+        font-size: 0.6rem;
+      }
+      .step i {
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        font-size: 0.9rem;
+      }
+      .line, .line-progress {
+        top: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1><i class="fas fa-shipping-fast"></i> Order Tracking</h1>
+  <nav>
+    <a href="cart.html"><i class="fas fa-shopping-cart"></i> Back to Cart</a>
+    <a href="home.html"><i class="fas fa-home"></i> Home</a>
+  </nav>
+</header>
+
+<div class="container">
+  <h2><i class="fas fa-map-marker-alt"></i> Live Delivery Updates</h2>
+  
+  <div id="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Loading your orders...</p>
+  </div>
+
+  <div id="tracking-list"></div>
+
+  <div id="empty-msg" class="empty-state" style="display:none;">
+    <i class="fas fa-box-open"></i>
+    <p>No orders currently being tracked.</p>
+    <p style="font-size: 0.9rem; margin-bottom: 25px;">Start shopping to see your deliveries here!</p>
+    <a href="home.html"><i class="fas fa-shopping-bag"></i> Start Shopping</a>
+  </div>
+</div>
+
+<footer>
+  © 2026 ShopEasy | Real-time Logistic Tracking
+</footer>
+
+<script>
+const userId = localStorage.getItem("userId");
+
+async function loadTracking() {
+  if (!userId) {
+    alert("Please login first!");
+    window.location.href = "login.html";
+    return;
+  }
+
+  const loadingDiv = document.getElementById("loading");
+  const listContainer = document.getElementById("tracking-list");
+  const emptyMsg = document.getElementById("empty-msg");
+
+  try {
+    loadingDiv.style.display = "block";
+    listContainer.innerHTML = "";
+    emptyMsg.style.display = "none";
+
+    const res = await fetch(`http://localhost:4000/api/purchased?userId=${userId}`);
+    
+    if (!res.ok) {
+      throw new Error("Failed to fetch orders");
+    }
+
+    const orders = await res.json();
+    loadingDiv.style.display = "none";
+
+    if (!orders || orders.length === 0) {
+      emptyMsg.style.display = "block";
+      return;
+    }
+
+    orders.forEach(order => {
+      console.log("📦 Order data:", order); // Debug log
+      
+      const status = order.status || "Pending";
+      const orderCard = document.createElement("div");
+      orderCard.className = "order-card";
+
+      // Status Mapping
+      const stages = ["Pending", "Packed", "Shipped", "Out for Delivery", "Delivered"];
+      const currentIdx = stages.indexOf(status);
+      const progressPercent = currentIdx >= 0 ? (currentIdx / (stages.length - 1)) * 80 : 0;
+
+      let stepsHtml = "";
+      stages.forEach((stage, idx) => {
+        const isActive = idx <= currentIdx ? "active" : "";
+        let icon = "fa-circle";
+        
+        if(stage === "Pending") icon = "fa-clock";
+        if(stage === "Packed") icon = "fa-box-open";
+        if(stage === "Shipped") icon = "fa-shipping-fast";
+        if(stage === "Out for Delivery") icon = "fa-truck-loading";
+        if(stage === "Delivered") icon = "fa-home";
+
+        const animClass = (stage === 'Out for Delivery' && isActive) ? 'truck-anim' : 
+                         (stage === status) ? 'pulse' : '';
+
+        stepsHtml += `
+          <div class="step ${isActive}">
+            <i class="fas ${icon} ${animClass}"></i>
+            <div>${stage}</div>
+          </div>
+        `;
+      });
+
+      // Format order details - with fallbacks
+      const quantity = Number(order.quantity) || 1;
+      const size = order.size || "Standard";
+      const price = Number(order.price) || 0;
+      const total = Number(order.totalAmount) || (price * quantity);
+      const vat = Number(order.vat) || 0;
+
+      orderCard.innerHTML = `
+        <div class="order-header">
+          <div class="order-info">
+            <div class="product-name"><i class="fas fa-box"></i> ${order.name || "Product"}</div>
+            <div class="order-details">
+              <span><i class="fas fa-money-bill-wave"></i> Price: ₱${price.toLocaleString()}</span>
+              <span><i class="fas fa-tag"></i> Size: ${size}</span>
+              <span><i class="fas fa-sort-amount-up"></i> Qty: ${quantity}</span>
+              ${vat > 0 ? `<span><i class="fas fa-percent"></i> VAT: ${vat}%</span>` : ''}
+            </div>
+            <div class="order-id"><i class="fas fa-barcode"></i> Order ID: ${order._id || 'N/A'}</div>
+          </div>
+          <div class="order-meta">
+            <div class="order-amount">₱${total.toLocaleString(undefined, {minimumFractionDigits: 2})}</div>
+            <div class="status-badge ${getStatusClass(status)}">${status}</div>
+            <div class="order-id" style="margin-top: 8px;"><i class="far fa-calendar"></i> ${order.date || 'N/A'}</div>
+          </div>
+        </div>
+        <div class="tracking-steps">
+          <div class="line"></div>
+          <div class="line-progress" style="width: ${progressPercent}%;"></div>
+          ${stepsHtml}
+        </div>
+      `;
+      listContainer.appendChild(orderCard);
+    });
+  } catch (error) {
+    console.error("Error fetching tracking data:", error);
+    loadingDiv.style.display = "none";
+    emptyMsg.innerHTML = `
+      <i class="fas fa-exclamation-triangle"></i>
+      <p>Failed to load orders</p>
+      <p style="font-size: 0.9rem; color: #999;">Please try again later</p>
+    `;
+    emptyMsg.style.display = "block";
+  }
+}
+
+function getStatusClass(status) {
+  if (status === "Out for Delivery") return "out";
+  return status.toLowerCase().replace(/ /g, '-');
+}
+
+// Initial load
+loadTracking();
+
+// Auto-refresh every 10 seconds for live updates
+setInterval(loadTracking, 10000);
+
+// Visual feedback on refresh
+setInterval(() => {
+  const badges = document.querySelectorAll('.status-badge');
+  badges.forEach(badge => {
+    badge.style.opacity = '0.7';
+    setTimeout(() => { badge.style.opacity = '1'; }, 200);
+  });
+}, 10000);
+</script>
+
+</body>
+</html>

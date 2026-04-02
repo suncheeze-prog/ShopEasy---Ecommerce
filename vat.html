@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShopEasy - VAT Settings</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #764ba2;
+      --secondary: #667eea;
+      --accent: #43e97b;
+      --white: #ffffff;
+      --glass: rgba(255, 255, 255, 0.95);
+      --text-dark: #333;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Header/Nav Style for consistency */
+    .nav-header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      padding: 15px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      z-index: 1000;
+    }
+
+    .vat-container {
+      background: var(--glass);
+      padding: 40px;
+      border-radius: 30px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+      text-align: center;
+      width: 90%;
+      max-width: 450px;
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .vat-container h2 {
+      color: var(--primary);
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .vat-container p {
+      color: #666;
+      font-size: 0.9rem;
+      margin-bottom: 25px;
+    }
+
+    .input-wrapper {
+      position: relative;
+      margin-bottom: 25px;
+    }
+
+    .vat-container input {
+      width: 100%;
+      padding: 15px;
+      border: 2px solid #eee;
+      border-radius: 15px;
+      font-size: 1.2rem;
+      text-align: center;
+      font-weight: 600;
+      transition: 0.3s;
+      outline: none;
+    }
+
+    .vat-container input:focus {
+      border-color: var(--secondary);
+      box-shadow: 0 0 15px rgba(102, 126, 234, 0.2);
+    }
+
+    .save-btn {
+      background: linear-gradient(to right, var(--secondary), var(--primary));
+      color: white;
+      border: none;
+      padding: 15px 40px;
+      border-radius: 15px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1rem;
+      width: 100%;
+      transition: 0.3s;
+      box-shadow: 0 10px 20px rgba(118, 75, 162, 0.3);
+    }
+
+    .save-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 25px rgba(118, 75, 162, 0.4);
+    }
+
+    .success {
+      background: #d1fae5;
+      color: #065f46;
+      padding: 12px;
+      border-radius: 12px;
+      font-weight: 600;
+      margin-top: 20px;
+      display: none;
+      font-size: 0.9rem;
+    }
+
+    .action-links {
+      margin-top: 25px;
+      display: flex;
+      justify-content: space-around;
+      gap: 10px;
+    }
+
+    .link-item {
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: 0.2s;
+    }
+
+    .link-item:hover {
+      color: var(--secondary);
+    }
+
+    .home-btn {
+      background: white;
+      color: var(--primary);
+      border: none;
+      padding: 8px 18px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: 0.3s;
+    }
+
+    .home-btn:hover {
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="nav-header">
+    <div style="font-size: 1.5rem; font-weight: 700;">ShopEasy</div>
+    <a href="home.html" class="home-btn"><i class="fas fa-home"></i> Home</a>
+  </div>
+
+  <div class="vat-container">
+    <i class="fas fa-percentage" style="font-size: 3rem; color: var(--secondary); margin-bottom: 15px;"></i>
+    <h2>VAT Settings</h2>
+    <p>Set the standard Value Added Tax percentage for all transactions.</p>
+    
+    <div class="input-wrapper">
+      <input type="number" id="vatInput" placeholder="0" min="0" max="100" />
+    </div>
+
+    <button class="save-btn" onclick="saveVAT()">Update VAT Settings</button>
+    
+    <div class="success" id="successMessage">
+      <i class="fas fa-check-circle"></i> VAT configuration saved!
+    </div>
+
+    <div class="action-links">
+      <a href="cart.html" class="link-item"><i class="fas fa-shopping-cart"></i> Back to Cart</a>
+      <a href="home.html" class="link-item"><i class="fas fa-th-large"></i> Dashboard</a>
+    </div>
+  </div>
+
+  <script>
+    // --- NANATILING FUNCTIONS (WALANG BINAGO) ---
+    async function saveVAT() {
+      const vatValue = parseFloat(document.getElementById("vatInput").value);
+      const successMsg = document.getElementById("successMessage");
+      
+      if (isNaN(vatValue) || vatValue < 0 || vatValue > 100) {
+        alert("⚠️ Please enter a valid VAT percentage between 0 and 100.");
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:4000/api/vat/set", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          body: JSON.stringify({ vat: vatValue })
+        });
+
+        console.log("🔵 Response status:", response.status);
+        const text = await response.text();
+        
+        if (text.startsWith("<!DOCTYPE") || text.startsWith("<html")) {
+          alert("❌ Server returned HTML! Check if route exists.");
+          return;
+        }
+
+        const result = JSON.parse(text);
+        if (!result.success) {
+          alert("❌ Failed: " + result.message);
+          return;
+        }
+
+        successMsg.style.display = "block";
+        
+        setTimeout(() => {
+          successMsg.style.display = "none";
+          window.location.href = "cart.html";
+        }, 1500);
+
+      } catch (err) {
+        alert("🔴 SERVER ERROR: " + err.message);
+      }
+    }
+
+    window.onload = async function() {
+      try {
+        const response = await fetch("http://localhost:4000/api/vat/get");
+        const result = await response.json();
+        
+        if (result.success) {
+          document.getElementById("vatInput").value = result.vat;
+        }
+      } catch (err) {
+        console.error("Error loading VAT:", err);
+      }
+    };
+  </script>
+</body>
+</html>

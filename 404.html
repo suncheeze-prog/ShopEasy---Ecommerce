@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>404 - Page Not Found | ShopEasy</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      background: linear-gradient(180deg, #0078d7 0%, #005fa3 100%);
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    /* ✨ Animated 404 */
+    .error {
+      font-size: 8rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      letter-spacing: 5px;
+      animation: bounce 2.5s infinite;
+    }
+
+    .error span {
+      display: inline-block;
+      animation: float 2s ease-in-out infinite alternate;
+    }
+
+    .error span:nth-child(1) { animation-delay: 0s; }
+    .error span:nth-child(2) { animation-delay: 0.3s; color: #ffcc00; }
+    .error span:nth-child(3) { animation-delay: 0.6s; }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0) rotate(0deg); }
+      100% { transform: translateY(-15px) rotate(5deg); }
+    }
+
+    /* 🛍️ Shopping Cart Illustration */
+    .cart {
+      margin-top: 20px;
+      font-size: 5rem;
+      animation: shake 1.5s infinite;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(3deg); }
+      50% { transform: rotate(-3deg); }
+      75% { transform: rotate(2deg); }
+    }
+
+    /* 💬 Text */
+    h2 {
+      font-size: 1.8rem;
+      margin-top: 15px;
+      font-weight: 600;
+    }
+
+    p {
+      font-size: 1rem;
+      color: #e0ecff;
+      margin: 10px 0 30px;
+      max-width: 400px;
+    }
+
+    /* 🔘 Button */
+    a.btn {
+      background: #ffcc00;
+      color: #004b85;
+      text-decoration: none;
+      padding: 12px 28px;
+      border-radius: 30px;
+      font-weight: 600;
+      transition: 0.3s;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    a.btn:hover {
+      background: #ffe45c;
+      transform: scale(1.05);
+    }
+
+    /* 📱 Responsive */
+    @media (max-width: 600px) {
+      .error {
+        font-size: 5rem;
+      }
+      .cart {
+        font-size: 4rem;
+      }
+      h2 {
+        font-size: 1.4rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="error">
+    <span>4</span>
+    <span>0</span>
+    <span>4</span>
+  </div>
+  <div class="cart">
+    🛒
+  </div>
+  <h2>Oops! Page Not Found</h2>
+  <p>Looks like this page got lost in checkout! Don’t worry, let’s get you back on track.</p>
+  <a href="home.html" class="btn">Back to Home</a>
+</body>
+</html>

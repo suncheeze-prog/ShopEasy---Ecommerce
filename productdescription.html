@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShopEasy - Product Details</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #764ba2;
+      --secondary: #667eea;
+      --accent: #43e97b;
+      --white: #ffffff;
+      --glass: rgba(255, 255, 255, 0.95);
+      --text-dark: #333;
+      --text-light: #666;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding-bottom: 50px;
+    }
+
+    header {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      padding: 15px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .back-btn {
+      background: white;
+      color: var(--primary);
+      border: none;
+      padding: 8px 18px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+    .back-btn:hover { transform: translateX(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+
+    .container {
+      max-width: 1200px;
+      margin: 40px auto;
+      background: var(--glass);
+      border-radius: 30px;
+      padding: 40px;
+      display: flex;
+      gap: 50px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+    }
+
+    /* Left: Image */
+    .product-image-section { flex: 1; }
+    .main-image {
+      width: 100%;
+      height: 450px;
+      object-fit: cover;
+      border-radius: 20px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      cursor: pointer; /* Para alam na clickable */
+    }
+
+    /* Right: Details */
+    .details { flex: 1; }
+    .product-badge {
+      background: var(--accent);
+      color: white;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+
+    .price-tag {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 15px 0;
+    }
+
+    /* Sizes */
+    .sizes { display: flex; gap: 10px; margin-top: 10px; }
+    .size-btn {
+      padding: 10px 20px;
+      border: 2px solid #eee;
+      background: white;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+    .size-btn.active {
+      border-color: var(--primary);
+      background: var(--primary);
+      color: white;
+    }
+
+    /* Qty */
+    .qty-box {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin: 20px 0;
+    }
+    .qty-btn {
+      width: 40px;
+      height: 40px;
+      border: 1px solid #ddd;
+      background: white;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+
+    /* Actions */
+    .action-group { display: flex; gap: 15px; margin-top: 30px; }
+    .btn {
+      flex: 1;
+      padding: 15px;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .btn-cart { background: var(--secondary); color: white; }
+    .btn-buy { background: var(--primary); color: white; }
+    .btn-wish { width: 60px; flex: none; background: #fff; border: 2px solid #ff4757; color: #ff4757; }
+    .btn-wish.added { background: #ff4757; color: white; }
+    .btn:hover { transform: translateY(-3px); opacity: 0.9; }
+
+    /* Tabs */
+    .tabs-container { max-width: 1200px; margin: 20px auto; background: white; border-radius: 20px; padding: 30px; }
+    .tab-nav { display: flex; gap: 20px; border-bottom: 2px solid #eee; margin-bottom: 20px; }
+    .tab-link { padding: 10px 20px; cursor: pointer; font-weight: 600; color: #888; position: relative; }
+    .tab-link.active { color: var(--primary); }
+    .tab-link.active::after {
+        content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 3px; background: var(--primary);
+    }
+    .tab-pane { display: none; line-height: 1.6; animation: fadeIn 0.3s ease; }
+    .tab-pane.active { display: block; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* =========================================
+       REVIEW SECTION STYLES
+       ========================================= */
+    .review-section { margin-top: 20px; }
+    
+    /* Write Review Form */
+    .write-review-box {
+        background: #f8f9fa; padding: 20px; border-radius: 15px; margin-bottom: 30px;
+        border: 1px solid #eee;
+    }
+    .star-rating { display: flex; gap: 5px; font-size: 1.5rem; color: #ddd; cursor: pointer; margin-bottom: 15px; }
+    .star-rating i.active { color: #fbbf24; }
+    
+    .review-input {
+        width: 100%; padding: 15px; border: 1px solid #ddd; border-radius: 10px; resize: vertical;
+        font-family: 'Poppins', sans-serif; margin-bottom: 10px;
+    }
+    .file-upload { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+    .file-upload input { display: none; }
+    .upload-label {
+        background: white; border: 1px dashed #aaa; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-size: 0.9rem;
+    }
+    .upload-preview { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
+    .upload-preview img { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; }
+
+    /* Review List */
+    .review-card {
+        border-bottom: 1px solid #eee; padding: 20px 0; display: flex; gap: 15px;
+    }
+    .review-avatar {
+        width: 50px; height: 50px; background: #ddd; border-radius: 50%; object-fit: cover;
+    }
+    .review-content { flex: 1; }
+    .review-header { display: flex; justify-content: space-between; margin-bottom: 5px; }
+    .reviewer-name { font-weight: 600; color: var(--text-dark); }
+    .review-date { font-size: 0.8rem; color: #999; }
+    .review-stars { color: #fbbf24; font-size: 0.9rem; margin-bottom: 8px; }
+    .review-text { color: var(--text-light); font-size: 0.95rem; }
+    .review-images { display: flex; gap: 10px; margin-top: 10px; }
+    .review-images img {
+        width: 80px; height: 80px; object-fit: cover; border-radius: 8px; cursor: pointer; transition: 0.2s;
+    }
+    .review-images img:hover { transform: scale(1.05); }
+
+    /* Popup */
+    #popup {
+      position: fixed; top: 20px; right: 20px;
+      background: white; padding: 15px 30px;
+      border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      display: none; align-items: center; gap: 10px; z-index: 2000;
+      border-left: 5px solid var(--accent);
+    }
+
+    @media (max-width: 850px) {
+      .container { flex-direction: column; }
+      .main-image { height: 300px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div style="font-size: 1.5rem; font-weight: 700;">ShopEasy</div>
+  <button class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i> Back</button>
+</header>
+
+<div class="container">
+  <div class="product-image-section">
+    <img id="main-image" class="main-image" src="" alt="Product">
+  </div>
+
+  <div class="details">
+    <span class="product-badge" id="product-category">Category</span>
+    <h1 id="product-name" style="margin-bottom: 10px;">Product Name</h1>
+    
+    <div style="color: #fbbf24; margin-bottom: 10px; cursor: pointer;" onclick="switchTab(null, 'review-tab')">
+        <i class="fas fa-star"></i> <span id="avg-rating">0.0</span> 
+        <span style="color: #666; font-size: 0.9rem;">(<span id="total-reviews">0</span> Reviews)</span>
+    </div>
+    
+    <div class="price-tag" id="product-price">₱0.00</div>
+    <p id="product-desc" style="color: #666; margin-bottom: 20px;"></p>
+
+    <div id="size-section">
+      <p style="font-weight: 600; margin-bottom: 10px;">Select Size:</p>
+      <div class="sizes" id="size-buttons"></div>
+    </div>
+
+    <div class="qty-box">
+      <p style="font-weight: 600;">Quantity:</p>
+      <button class="qty-btn" onclick="changeQty(-1)">-</button>
+      <input type="number" id="quantity" value="1" readonly style="width: 40px; text-align: center; border: none; font-size: 1rem; font-weight: 700;">
+      <button class="qty-btn" onclick="changeQty(1)">+</button>
+      <span id="stock-count" style="font-size: 0.8rem; color: #999;"></span>
+    </div>
+
+    <div class="action-group">
+      <button class="btn btn-cart" id="add-to-cart-btn"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
+      <button class="btn btn-buy" id="buy-now-btn">Buy Now</button>
+      <button class="btn btn-wish" id="wishlist-btn"><i class="fas fa-heart"></i></button>
+    </div>
+  </div>
+</div>
+
+<div class="tabs-container">
+  <div class="tab-nav">
+    <div class="tab-link active" onclick="switchTab(event, 'desc-tab')">Description</div>
+    <div class="tab-link" onclick="switchTab(event, 'review-tab')">Reviews & Comments</div>
+  </div>
+  
+  <div id="desc-tab" class="tab-pane active">
+    <p id="full-desc"></p>
+  </div>
+
+  <div id="review-tab" class="tab-pane">
+    <div class="review-section">
+        
+        <div id="review-form-container" class="write-review-box" style="display: none;">
+            <h3 style="margin-bottom: 15px;">Write a Review</h3>
+            
+            <div class="star-rating" id="star-input">
+                <i class="fas fa-star" data-value="1"></i>
+                <i class="fas fa-star" data-value="2"></i>
+                <i class="fas fa-star" data-value="3"></i>
+                <i class="fas fa-star" data-value="4"></i>
+                <i class="fas fa-star" data-value="5"></i>
+            </div>
+            
+            <textarea id="review-text" class="review-input" rows="3" placeholder="How was the product?"></textarea>
+            
+            <div class="file-upload">
+                <label for="review-images" class="upload-label"><i class="fas fa-camera"></i> Add Photos</label>
+                <input type="file" id="review-images" multiple accept="image/*">
+                <span style="font-size: 0.8rem; color: #888;">Max 3 images</span>
+            </div>
+            <div id="image-preview" class="upload-preview"></div>
+
+            <button class="btn btn-primary" style="background: var(--primary); color: white; width: auto; padding: 10px 25px;" onclick="submitReview()">Submit Review</button>
+        </div>
+
+        <div id="login-alert" style="text-align: center; padding: 20px; background: #f0f0f0; border-radius: 10px; margin-bottom: 20px; display: none;">
+            <p>Please <a href="login.html" style="color: var(--primary); font-weight: bold;">Login</a> to write a review.</p>
+        </div>
+
+        <h3 style="margin-bottom: 20px;">Customer Reviews</h3>
+        <div id="reviews-list">
+            <p style="text-align: center; color: #888;">No reviews yet. Be the first!</p>
+        </div>
+    </div>
+  </div>
+</div>
+
+<div id="popup">
+  <span id="popup-icon"></span>
+  <div style="font-weight: 600;" id="popup-text"></div>
+</div>
+
+<script>
+// ==========================================
+// GLOBAL VARIABLES
+// ==========================================
+const product = JSON.parse(localStorage.getItem("selectedProduct"));
+const userId = localStorage.getItem("userId");
+const userFullName = localStorage.getItem("fullName") || "Anonymous"; // Assuming you save name on login
+let selectedSize = null;
+let selectedPrice = 0;
+let wishlist = [];
+let currentRating = 0;
+let reviewImages = []; // Stores file objects
+
+// ==========================================
+// INITIALIZATION
+// ==========================================
+function init() {
+  if (!product) { window.location.href = "home.html"; return; }
+
+  document.getElementById("main-image").src = product.image;
+  document.getElementById("product-name").textContent = product.name;
+  document.getElementById("product-category").textContent = product.category || "New Arrival";
+  document.getElementById("product-desc").textContent = product.desc;
+  document.getElementById("full-desc").textContent = product.desc;
+  document.getElementById("stock-count").textContent = `(${product.quantity} left)`;
+
+  // Handle Prices
+  if (product.prices && typeof product.prices === 'object') {
+    const sizeBox = document.getElementById("size-buttons");
+    Object.entries(product.prices).forEach(([size, price]) => {
+      const btn = document.createElement("button");
+      btn.className = "size-btn";
+      btn.textContent = size;
+      btn.onclick = () => {
+        selectedSize = size;
+        selectedPrice = price;
+        document.querySelectorAll(".size-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById("product-price").textContent = `₱${price.toLocaleString()}`;
+      };
+      sizeBox.appendChild(btn);
+    });
+    document.getElementById("product-price").textContent = "Select Size";
+  } else {
+    selectedPrice = product.price;
+    document.getElementById("product-price").textContent = `₱${product.price.toLocaleString()}`;
+    document.getElementById("size-section").style.display = "none";
+  }
+  
+  loadWishlist();
+  initReviewSystem(); // Load Review Features
+}
+
+// ==========================================
+// CORE FUNCTIONS (Cart, Wishlist)
+// ==========================================
+function changeQty(val) {
+  const input = document.getElementById("quantity");
+  let newVal = parseInt(input.value) + val;
+  if (newVal >= 1 && newVal <= product.quantity) input.value = newVal;
+}
+
+async function loadWishlist() {
+  if (!userId) return;
+  try {
+      const res = await fetch(`http://localhost:4000/api/wishlist/${userId}`);
+      const data = await res.json();
+      if (data.success) {
+        wishlist = data.products;
+        updateWishBtn();
+      }
+  } catch(e) { console.log("Wishlist offline mode"); }
+}
+
+function updateWishBtn() {
+  const btn = document.getElementById("wishlist-btn");
+  const exists = wishlist.some(item => item._id === product._id);
+  exists ? btn.classList.add("added") : btn.classList.remove("added");
+}
+
+async function addToCart(redirect = false) {
+  if (!userId) { alert("Login first!"); return; }
+  if (product.prices && !selectedSize) { alert("Please select a size!"); return; }
+
+  const qty = parseInt(document.getElementById("quantity").value);
+  const cartItem = {
+    userId,
+    productId: product._id,
+    name: product.name,
+    image: product.image,
+    size: selectedSize || "Standard",
+    selectedPrice: selectedPrice,
+    orderQty: qty
+  };
+
+  try {
+    const res = await fetch("http://localhost:4000/api/cart/add", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(cartItem)
+    });
+    const data = await res.json();
+    if (data.success) {
+      if (redirect) window.location.href = "cart.html";
+      else showPopup("✅", "Added to Cart!");
+    }
+  } catch (e) { alert("Server error or API not running"); }
+}
+
+// ==========================================
+// REVIEW SYSTEM LOGIC
+// ==========================================
+
+function initReviewSystem() {
+    // 1. Show Form only if Logged In
+    if (userId) {
+        document.getElementById("review-form-container").style.display = "block";
+    } else {
+        document.getElementById("login-alert").style.display = "block";
+    }
+
+    // 2. Load Reviews
+    loadReviews();
+
+    // 3. Star Rating Interaction
+    const stars = document.querySelectorAll("#star-input i");
+    stars.forEach(star => {
+        star.addEventListener("click", () => {
+            currentRating = star.dataset.value;
+            stars.forEach(s => {
+                s.classList.toggle("active", s.dataset.value <= currentRating);
+            });
+        });
+    });
+
+    // 4. Image Preview Logic
+    document.getElementById("review-images").addEventListener("change", function(e) {
+        const files = Array.from(e.target.files);
+        const previewContainer = document.getElementById("image-preview");
+        previewContainer.innerHTML = "";
+        reviewImages = files; // Store for submission
+
+        files.slice(0, 3).forEach(file => { // Max 3 preview
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.createElement("img");
+                img.src = e.target.result;
+                previewContainer.appendChild(img);
+            }
+            reader.readAsDataURL(file);
+        });
+    });
+}
+
+async function submitReview() {
+    if (currentRating === 0) return alert("Please select a star rating!");
+    const text = document.getElementById("review-text").value;
+    
+    // Kunin ang avatar mula sa localStorage (dapat nasave ito nung login)
+    const userAvatar = localStorage.getItem("userAvatar") || ""; 
+
+    const formData = new FormData();
+    formData.append("userId", userId);
+    formData.append("productId", product._id);
+    formData.append("rating", currentRating);
+    formData.append("comment", text);
+    formData.append("userName", userFullName);
+    formData.append("userAvatar", userAvatar); // <--- ISAMA ITO
+
+    reviewImages.forEach(file => {
+        formData.append("images", file);
+    });
+
+    try {
+        const res = await fetch("http://localhost:4000/api/reviews/add", {
+            method: "POST",
+            body: formData 
+        });
+        const data = await res.json();
+        if (data.success) {
+            // ... (rest of your success logic)
+            location.reload(); // I-refresh para makita ang bagong review na may pic
+        }
+    } catch (e) {
+        console.error("Error submitting review", e);
+    }
+}
+
+// Temporary function to show review immediately if backend isn't ready
+function simulateAddReview(text, rating, images) {
+    const list = document.getElementById("reviews-list");
+    if(list.querySelector('p')) list.innerHTML = ""; // Remove "No reviews" text
+
+    const starsHtml = Array(5).fill(0).map((_, i) => 
+        `<i class="fas fa-star" style="color: ${i < rating ? '#fbbf24' : '#ddd'}"></i>`
+    ).join('');
+
+    // Simulate Image URLs (since we can't upload without backend)
+    let imgsHtml = "";
+    if(images.length > 0) {
+        imgsHtml = `<div class="review-images">` + 
+            Array.from(images).map(() => `<img src="https://via.placeholder.com/80?text=Photo">`).join('') + 
+        `</div>`;
+    }
+
+    const html = `
+    <div class="review-card">
+        <img src="https://via.placeholder.com/50" class="review-avatar" alt="User">
+        <div class="review-content">
+            <div class="review-header">
+                <span class="reviewer-name">${userFullName}</span>
+                <span class="review-date">Just Now</span>
+            </div>
+            <div class="review-stars">${starsHtml}</div>
+            <p class="review-text">${text}</p>
+            ${imgsHtml}
+        </div>
+    </div>`;
+    
+    list.insertAdjacentHTML('afterbegin', html);
+    showPopup("⭐", "Review Added!");
+}
+
+async function loadReviews() {
+    try {
+        const res = await fetch(`http://localhost:4000/api/reviews/${product._id}`);
+        const data = await res.json();
+        const list = document.getElementById("reviews-list");
+
+        if (data.success && data.reviews.length > 0) {
+            list.innerHTML = "";
+            let totalStars = 0;
+
+            data.reviews.forEach(r => {
+                totalStars += r.rating;
+
+                // 1. Logic para sa Avatar (Profile Pic)
+                let finalAvatar = "";
+                if (r.userAvatar) {
+                    finalAvatar = r.userAvatar.startsWith("http") 
+                        ? r.userAvatar 
+                        : `http://localhost:4000${r.userAvatar}`;
+                } else {
+                    finalAvatar = `https://ui-avatars.com/api/?name=${r.userName}&background=random&color=fff`;
+                }
+
+                // 2. Logic para sa Stars
+                const starsHtml = Array(5).fill(0).map((_, i) => 
+                    `<i class="fas fa-star" style="color: ${i < r.rating ? '#fbbf24' : '#ddd'}"></i>`
+                ).join('');
+
+                // 3. Logic para sa Review Images (Gallery)
+                let imgsHtml = "";
+                if (r.images && r.images.length > 0) {
+                    imgsHtml = `<div class="review-images">` + 
+                        r.images.map(img => `<img src="${img}" onclick="window.open('${img}')">`).join('') + 
+                    `</div>`;
+                }
+
+                // 4. Pagsasama-sama ng HTML
+                list.innerHTML += `
+                <div class="review-card">
+                    <img src="${finalAvatar}" class="review-avatar" alt="User" onerror="this.src='https://via.placeholder.com/50'">
+                    <div class="review-content">
+                        <div class="review-header">
+                            <span class="reviewer-name">${r.userName}</span>
+                            <span class="review-date">${new Date(r.date).toLocaleDateString()}</span>
+                        </div>
+                        <div class="review-stars">${starsHtml}</div>
+                        <p class="review-text">${r.comment}</p>
+                        ${imgsHtml}
+                    </div>
+                </div>`;
+            });
+
+            // Update Header Stats (Yung nasa taas tabi ng product name)
+            document.getElementById("total-reviews").textContent = data.reviews.length;
+            document.getElementById("avg-rating").textContent = (totalStars / data.reviews.length).toFixed(1);
+
+        } else {
+            list.innerHTML = `<p style="text-align: center; color: #888;">No reviews yet.</p>`;
+        }
+    } catch (e) {
+        console.log("Reviews API error:", e);
+    }
+}
+
+// ==========================================
+// EVENT LISTENERS
+// ==========================================
+document.getElementById("add-to-cart-btn").onclick = () => addToCart(false);
+document.getElementById("buy-now-btn").onclick = () => addToCart(true);
+
+document.getElementById("wishlist-btn").onclick = async () => {
+  if (!userId) return;
+  const exists = wishlist.some(item => item._id === product._id);
+  const url = exists ? `http://localhost:4000/api/wishlist/remove/${userId}/${product._id}` : `http://localhost:4000/api/wishlist/add`;
+  const method = exists ? "DELETE" : "POST";
+  
+  const res = await fetch(url, {
+    method,
+    headers: { "Content-Type": "application/json" },
+    body: exists ? null : JSON.stringify({ userId, productId: product._id })
+  });
+  const data = await res.json();
+  if (data.success) {
+    wishlist = data.products;
+    updateWishBtn();
+    showPopup(exists ? "💔" : "❤️", exists ? "Removed from Wishlist" : "Saved to Wishlist");
+  }
+};
+
+function showPopup(icon, text) {
+  const p = document.getElementById("popup");
+  document.getElementById("popup-icon").textContent = icon;
+  document.getElementById("popup-text").textContent = text;
+  p.style.display = "flex";
+  setTimeout(() => p.style.display = "none", 2500);
+}
+
+function switchTab(e, id) {
+  if(e) {
+      document.querySelectorAll(".tab-link").forEach(l => l.classList.remove("active"));
+      e.target.classList.add("active");
+  } else {
+      // Manual switch (from star summary click)
+      document.querySelectorAll(".tab-link").forEach(l => l.classList.remove("active"));
+      document.querySelectorAll(".tab-link")[1].classList.add("active");
+  }
+  
+  document.querySelectorAll(".tab-pane").forEach(p => p.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+function goBack() { window.location.href = "home.html"; }
+
+init();
+</script>
+</body>
+</html>

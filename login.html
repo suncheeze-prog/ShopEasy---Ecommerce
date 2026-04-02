@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShopEasy - Login</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+  :root {
+    --primary: #6a11cb;
+    --secondary: #2575fc;
+    --text-dark: #2d3436;
+    --glass: rgba(255, 255, 255, 0.85);
+  }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+    background-size: 400% 400%;
+    animation: gradientMove 15s ease infinite;
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  @keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  .form-container {
+    background: var(--glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    width: 400px;
+    padding: 40px;
+    text-align: center;
+    position: relative;
+    z-index: 10;
+    transition: all 0.3s ease;
+  }
+
+  .logo {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 5px;
+  }
+
+  h2 {
+    color: var(--text-dark);
+    font-weight: 600;
+    margin-bottom: 25px;
+    font-size: 1.5rem;
+  }
+
+  /* Password Field Wrapper */
+  .field-wrapper {
+    position: relative;
+    width: 100%;
+  }
+
+  .toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #636e72;
+    z-index: 10;
+    transition: 0.3s;
+  }
+
+  .toggle-password:hover {
+    color: var(--primary);
+  }
+
+  input {
+    width: 100%;
+    padding: 12px 15px;
+    margin: 10px 0;
+    border: 1.5px solid rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    font-size: 14px;
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.5);
+    transition: 0.3s;
+  }
+
+  input:focus {
+    outline: none;
+    border-color: var(--secondary);
+    background: white;
+    box-shadow: 0 0 10px rgba(37, 117, 252, 0.2);
+  }
+
+  button {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(45deg, var(--primary), var(--secondary));
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 15px;
+    box-shadow: 0 4px 15px rgba(106, 17, 203, 0.3);
+    transition: 0.3s;
+  }
+
+  button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(106, 17, 203, 0.4);
+  }
+
+  button:disabled {
+    background: #bdc3c7;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  p {
+    margin-top: 20px;
+    color: #636e72;
+    font-size: 0.9rem;
+  }
+
+  span {
+    color: var(--primary);
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s;
+  }
+
+  span:hover {
+    color: var(--secondary);
+    text-decoration: underline;
+  }
+
+  .hidden { display: none; }
+
+  #message {
+    margin-top: 15px;
+    font-size: 14px;
+    min-height: 20px;
+    font-weight: 500;
+  }
+
+  .info-text { font-size: 12px; color: #666; margin-bottom: 10px; }
+
+  /* Timer UI */
+  .timer-container { margin: 20px 0; }
+  .timer-circle { position: relative; width: 100px; height: 100px; margin: 0 auto; }
+  .timer-svg { transform: rotate(-90deg); }
+  .timer-circle-bg { fill: none; stroke: #e0e0e0; stroke-width: 6; }
+  .timer-circle-progress {
+    fill: none;
+    stroke: var(--secondary);
+    stroke-width: 6;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1s linear;
+  }
+  .timer-text {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--text-dark);
+  }
+  .timer-label { font-size: 8px; display: block; color: #666; text-transform: uppercase; }
+  .timer-expired { stroke: #ff4757; }
+
+  form { animation: fadeIn 0.5s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+
+<div class="form-container">
+  <div class="logo">ShopEasy</div>
+
+  <form id="login-form">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Username" required />
+    <div class="field-wrapper">
+      <input type="password" id="password" placeholder="Password" required />
+      <i class="fas fa-eye toggle-password" onclick="togglePass('password', this)"></i>
+    </div>
+    <button type="submit" id="login-btn">Login</button>
+    <p>Don't have an account? <span id="register-link">Create Account</span></p>
+    <p><span id="forgot-link">Forgot Password?</span></p>
+  </form>
+
+  <form id="register-form" class="hidden">
+    <h2>Create Account</h2>
+    <input type="text" id="full-name" placeholder="Full Name" required />
+    <input type="text" id="new-username" placeholder="Username" required />
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="text" id="phone" placeholder="Phone Number" maxlength="11" required />
+    <input type="text" id="address" placeholder="Address" required />
+    <div class="field-wrapper">
+      <input type="password" id="new-password" placeholder="Password" required />
+      <i class="fas fa-eye toggle-password" onclick="togglePass('new-password', this)"></i>
+    </div>
+    <button type="submit" id="register-btn">Register</button>
+    <p>Already have an account? <span id="login-link">Login</span></p>
+  </form>
+
+  <form id="forgot-form" class="hidden">
+    <h2>Forgot Password</h2>
+    <p class="info-text">Enter your email to receive OTP</p>
+    <input type="email" id="forgot-email" placeholder="Enter your email" required />
+    <button type="submit" id="send-otp-btn">Send OTP</button>
+    <p><span id="back-to-login">Back to Login</span></p>
+  </form>
+
+  <form id="otp-form" class="hidden">
+    <h2>Verify OTP</h2>
+    <p class="info-text">Enter the 6-digit code sent to your email</p>
+    
+    <div class="timer-container">
+      <div class="timer-circle">
+        <svg class="timer-svg" width="100" height="100">
+          <circle class="timer-circle-bg" cx="50" cy="50" r="42"></circle>
+          <circle class="timer-circle-progress" cx="50" cy="50" r="42" id="timer-progress"></circle>
+        </svg>
+        <div class="timer-text" id="timer-display">
+          <span id="timer-minutes">10</span>:<span id="timer-seconds">00</span>
+          <span class="timer-label">OTP expires</span>
+        </div>
+      </div>
+    </div>
+    
+    <input type="text" id="otp-code" placeholder="Enter OTP" maxlength="6" required />
+    <div class="field-wrapper">
+      <input type="password" id="reset-password" placeholder="New Password" required />
+      <i class="fas fa-eye toggle-password" onclick="togglePass('reset-password', this)"></i>
+    </div>
+    <div class="field-wrapper">
+      <input type="password" id="confirm-password" placeholder="Confirm Password" required />
+      <i class="fas fa-eye toggle-password" onclick="togglePass('confirm-password', this)"></i>
+    </div>
+    <button type="submit" id="verify-otp-btn">Reset Password</button>
+    <p><span id="resend-otp">Resend OTP</span> | <span id="back-to-login2">Back to Login</span></p>
+  </form>
+
+  <p id="message"></p>
+</div>
+
+<script>
+// --- UI TOGGLE LOGIC ---
+function togglePass(inputId, icon) {
+  const input = document.getElementById(inputId);
+  if (input.type === "password") {
+    input.type = "text";
+    icon.classList.replace("fa-eye", "fa-eye-slash");
+  } else {
+    input.type = "password";
+    icon.classList.replace("fa-eye-slash", "fa-eye");
+  }
+}
+
+// --- ORIGINAL FUNCTIONS (NO CHANGES) ---
+const loginForm = document.getElementById("login-form");
+const registerForm = document.getElementById("register-form");
+const forgotForm = document.getElementById("forgot-form");
+const otpForm = document.getElementById("otp-form");
+const loginLink = document.getElementById("login-link");
+const registerLink = document.getElementById("register-link");
+const forgotLink = document.getElementById("forgot-link");
+const backToLogin = document.getElementById("back-to-login");
+const backToLogin2 = document.getElementById("back-to-login2");
+const resendOtp = document.getElementById("resend-otp");
+const message = document.getElementById("message");
+
+let userEmail = ""; 
+let countdownTimer = null; 
+let timeRemaining = 600; 
+
+function startCountdown() {
+  const timerProgress = document.getElementById('timer-progress');
+  const timerMinutes = document.getElementById('timer-minutes');
+  const timerSeconds = document.getElementById('timer-seconds');
+  const radius = 42;
+  const circumference = 2 * Math.PI * radius;
+  timerProgress.style.strokeDasharray = circumference;
+  timeRemaining = 600; 
+  if (countdownTimer) clearInterval(countdownTimer);
+  
+  countdownTimer = setInterval(() => {
+    timeRemaining--;
+    const minutes = Math.floor(timeRemaining / 60);
+    const seconds = timeRemaining % 60;
+    timerMinutes.textContent = minutes.toString().padStart(2, '0');
+    timerSeconds.textContent = seconds.toString().padStart(2, '0');
+    const progress = (timeRemaining / 600) * circumference;
+    timerProgress.style.strokeDashoffset = circumference - progress;
+    if (timeRemaining <= 120) timerProgress.classList.add('timer-expired');
+    if (timeRemaining <= 0) {
+      clearInterval(countdownTimer);
+      message.style.color = 'red';
+      message.textContent = '⏱️ OTP expired! Please request a new one.';
+      document.getElementById('verify-otp-btn').disabled = true;
+    }
+  }, 1000);
+}
+
+function stopCountdown() { if (countdownTimer) clearInterval(countdownTimer); }
+
+function hideAllForms() {
+  loginForm.classList.add("hidden");
+  registerForm.classList.add("hidden");
+  forgotForm.classList.add("hidden");
+  otpForm.classList.add("hidden");
+}
+
+registerLink.addEventListener("click", () => { hideAllForms(); registerForm.classList.remove("hidden"); message.textContent = ""; });
+loginLink.addEventListener("click", () => { hideAllForms(); loginForm.classList.remove("hidden"); message.textContent = ""; });
+forgotLink.addEventListener("click", () => { hideAllForms(); forgotForm.classList.remove("hidden"); message.textContent = ""; });
+backToLogin.addEventListener("click", () => { hideAllForms(); loginForm.classList.remove("hidden"); stopCountdown(); });
+backToLogin2.addEventListener("click", () => { hideAllForms(); loginForm.classList.remove("hidden"); stopCountdown(); });
+
+document.getElementById("phone").addEventListener("keypress", e => { if (!/[0-9]/.test(e.key)) e.preventDefault(); });
+document.getElementById("otp-code").addEventListener("keypress", e => { if (!/[0-9]/.test(e.key)) e.preventDefault(); });
+
+registerForm.addEventListener("submit", async e => {
+  e.preventDefault();
+  const newUser = {
+    fullName: document.getElementById("full-name").value.trim(),
+    username: document.getElementById("new-username").value.trim(),
+    email: document.getElementById("email").value.trim(),
+    phone: document.getElementById("phone").value.trim(),
+    address: document.getElementById("address").value.trim(),
+    password: document.getElementById("new-password").value.trim(),
+    role: "buyer"
+  };
+  try {
+    const res = await fetch("http://localhost:4000/api/register", {
+      method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(newUser)
+    });
+    const result = await res.json();
+    if(result.success){
+      localStorage.setItem("userId", result.user._id);
+      localStorage.setItem("role", result.user.role);
+      message.style.color="green";
+      message.textContent=`✅ Account created!`;
+      setTimeout(()=>window.location.href="home.html",1200);
+    } else { message.style.color="red"; message.textContent=result.message; }
+  } catch(err){ message.style.color="red"; message.textContent="❌ Server Error"; }
+});
+
+loginForm.addEventListener("submit", async e => {
+  e.preventDefault();
+  const loginData = {
+    username: document.getElementById("username").value.trim(),
+    password: document.getElementById("password").value.trim()
+  };
+  try {
+    const res = await fetch("http://localhost:4000/api/login", {
+      method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(loginData)
+    });
+    const result = await res.json();
+    if(result.success){
+      localStorage.setItem("userId", result.user._id);
+      localStorage.setItem("role", result.user.role);
+      localStorage.setItem("username", result.user.username);
+      message.style.color="green";
+      message.textContent=`✅ Welcome ${result.user.username}!`;
+      setTimeout(() => window.location.href = "home.html", 1000);
+    } else { message.style.color="red"; message.textContent="Invalid Credentials"; }
+  } catch(err){ message.style.color="red"; message.textContent="❌ Server Error"; }
+});
+
+forgotForm.addEventListener("submit", async e => {
+  e.preventDefault();
+  userEmail = document.getElementById("forgot-email").value.trim();
+  try {
+    const res = await fetch("http://localhost:4000/api/forgot-password", {
+      method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ email: userEmail })
+    });
+    const result = await res.json();
+    if(result.success) {
+      message.style.color = "green";
+      message.textContent = "✅ OTP sent!";
+      setTimeout(() => { hideAllForms(); otpForm.classList.remove("hidden"); startCountdown(); }, 2000);
+    } else { message.style.color = "red"; message.textContent = "Email not found"; }
+  } catch(err) { message.style.color = "red"; message.textContent = "❌ Server Error"; }
+});
+
+otpForm.addEventListener("submit", async e => {
+  e.preventDefault();
+  const otp = document.getElementById("otp-code").value.trim();
+  const newPassword = document.getElementById("reset-password").value.trim();
+  if(newPassword !== document.getElementById("confirm-password").value.trim()) {
+    message.style.color = "red"; message.textContent = "❌ Mismatch Password"; return;
+  }
+  try {
+    const res = await fetch("http://localhost:4000/api/verify-otp", {
+      method: "POST", headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ email: userEmail, otp: otp, newPassword: newPassword })
+    });
+    const result = await res.json();
+    if(result.success) {
+      message.style.color = "green";
+      message.textContent = "✅ Success! Redirecting...";
+      stopCountdown();
+      setTimeout(() => { hideAllForms(); loginForm.classList.remove("hidden"); }, 2000);
+    } else { message.style.color = "red"; message.textContent = "Invalid OTP"; }
+  } catch(err) { message.style.color = "red"; message.textContent = "❌ Server Error"; }
+});
+
+resendOtp.addEventListener("click", async () => {
+  try {
+    await fetch("http://localhost:4000/api/forgot-password", {
+      method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ email: userEmail })
+    });
+    startCountdown();
+    message.style.color = "green"; message.textContent = "✅ New OTP Sent";
+  } catch(err) { message.style.color = "red"; message.textContent = "❌ Error"; }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (localStorage.getItem("userId")) window.location.href = "home.html";
+});
+</script>
+</body>
+</html>

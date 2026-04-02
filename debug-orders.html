@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Debug - Order Data</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+    }
+    h1 { color: #764ba2; margin-bottom: 20px; }
+    h2 { color: #667eea; margin: 30px 0 15px; font-size: 1.2rem; }
+    .data-box {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      border-left: 4px solid #667eea;
+    }
+    .data-box pre {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+    .label {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 5px;
+    }
+    button {
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-right: 10px;
+      margin-top: 10px;
+    }
+    button:hover { opacity: 0.9; }
+    .warning { background: #ff6b6b; }
+    .success { background: #51cf66; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    th {
+      background: #f8f9fa;
+      font-weight: 600;
+      color: #667eea;
+    }
+    .missing { color: #ff6b6b; font-weight: 600; }
+    .present { color: #51cf66; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>🔍 Debug Order Data</h1>
+  <p>This page helps you check what data is being saved to the database.</p>
+
+  <h2>📦 Cart Items (Before Checkout)</h2>
+  <div class="data-box">
+    <div class="label">Current Cart:</div>
+    <pre id="cart-data">Loading...</pre>
+  </div>
+
+  <h2>✅ Purchased Orders (After Checkout)</h2>
+  <div class="data-box">
+    <div class="label">Saved Orders:</div>
+    <pre id="purchased-data">Loading...</pre>
+  </div>
+
+  <h2>📊 Data Analysis</h2>
+  <div class="data-box">
+    <table id="analysis-table">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Name</th>
+          <th>Price</th>
+          <th>Size</th>
+          <th>Quantity</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="analysis-body">
+        <tr><td colspan="6">No data yet</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="margin-top: 30px;">
+    <button onclick="loadData()">🔄 Refresh Data</button>
+    <button onclick="window.location.href='cart.html'">🛒 Go to Cart</button>
+    <button onclick="window.location.href='delivery-tracking.html'">📦 Go to Tracking</button>
+  </div>
+</div>
+
+<script>
+const userId = localStorage.getItem("userId");
+
+async function loadData() {
+  if (!userId) {
+    alert("No userId found! Please login first.");
+    return;
+  }
+
+  // Load Cart Data
+  try {
+    const cartRes = await fetch(`http://localhost:4000/api/cart/${userId}`);
+    const cartData = await cartRes.json();
+    document.getElementById("cart-data").textContent = JSON.stringify(cartData, null, 2);
+  } catch (error) {
+    document.getElementById("cart-data").textContent = "Error: " + error.message;
+  }
+
+  // Load Purchased Data
+  try {
+    const purchasedRes = await fetch(`http://localhost:4000/api/purchased?userId=${userId}`);
+    const purchasedData = await purchasedRes.json();
+    document.getElementById("purchased-data").textContent = JSON.stringify(purchasedData, null, 2);
+
+    // Analyze data
+    if (purchasedData && purchasedData.length > 0) {
+      const tbody = document.getElementById("analysis-body");
+      tbody.innerHTML = "";
+      
+      purchasedData.forEach(order => {
+        const row = document.createElement("tr");
+        
+        const hasPrice = order.price != null && order.price !== 0;
+        const hasSize = order.size != null && order.size !== "" && order.size !== "N/A";
+        
+        row.innerHTML = `
+          <td>${order._id || "No ID"}</td>
+          <td>${order.name || "No Name"}</td>
+          <td class="${hasPrice ? 'present' : 'missing'}">
+            ${hasPrice ? '₱' + order.price : '❌ MISSING'}
+          </td>
+          <td class="${hasSize ? 'present' : 'missing'}">
+            ${hasSize ? order.size : '❌ MISSING'}
+          </td>
+          <td>${order.quantity || 0}</td>
+          <td>${order.status || "Unknown"}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+  } catch (error) {
+    document.getElementById("purchased-data").textContent = "Error: " + error.message;
+  }
+}
+
+// Auto load on page load
+loadData();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShopEasy - Terms and Conditions</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background-color: #f4f6f9;
+      color: #222;
+    }
+
+    /* Header */
+    header {
+      background-color: #0078d7;
+      color: white;
+      padding: 15px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .hamburger {
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: white;
+      background: none;
+      border: none;
+      margin-right: 10px;
+      transition: transform 0.2s;
+    }
+    .hamburger:hover { transform: scale(1.1); }
+
+    nav a {
+      color: white;
+      margin: 0 10px;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    nav a:hover { color: #bde0ff; }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -260px;
+      width: 250px;
+      height: 100%;
+      background-color: #222;
+      color: white;
+      padding: 20px;
+      transition: left 0.3s ease;
+      z-index: 1000;
+      box-shadow: 3px 0 10px rgba(0,0,0,0.3);
+    }
+    .sidebar.active { left: 0; }
+    .sidebar h2 {
+      margin-top: 0;
+      font-size: 1.4rem;
+      border-bottom: 2px solid white;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+    .sidebar a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      margin: 12px 0;
+      font-size: 1.1rem;
+    }
+    .sidebar a:hover { color: #bde0ff; }
+    .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.3);
+      display: none;
+      z-index: 900;
+    }
+    .overlay.show { display: block; }
+
+    /* Main */
+    main {
+      max-width: 1000px;
+      margin: 50px auto;
+      padding: 30px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #0078d7;
+      margin-bottom: 30px;
+    }
+    h2 {
+      color: #0078d7;
+      margin-top: 25px;
+    }
+    p {
+      color: #333;
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+    ul {
+      margin-left: 25px;
+      color: #444;
+    }
+
+    /* Footer */
+    footer {
+      background: linear-gradient(180deg, #0078d7 0%, #005fa3 100%);
+      color: white;
+      padding: 50px 20px;
+      margin-top: 50px;
+      border-top-left-radius: 30px;
+      border-top-right-radius: 30px;
+    }
+    footer a {
+      color: #e8f4ff;
+      text-decoration: none;
+    }
+    footer a:hover { color: #bde0ff; transition: 0.3s; }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <span class="close-btn" onclick="toggleSidebar()">✖</span>
+    <h2>🧰 Maintenance</h2>
+    <a href="home.html">Home</a>
+    <a href="addproduct.html">Add Product</a>
+    <a href="products.html">Products</a>
+    <a href="inventory.html">Inventory</a>
+    <a href="delivery.html">Delivery</a>
+    <a href="sales.html">Sales</a>
+    <a href="purchased.html">Purchased</a>
+    <a href="vat.html">VAT</a>
+    <a href="user.html">Create Account</a>
+  </div>
+
+  <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="header-container">
+      <div class="header-left">
+        <button class="hamburger" onclick="toggleSidebar()">☰</button>
+        <h1>ShopEasy</h1>
+      </div>
+      <nav>
+        <a href="home.html">Home</a>
+        <a href="products.html">Products</a>
+        <a href="customerservice.html">Customer Service</a>
+        <a href="helpcentre.html">Help Centre</a>
+        <a href="guarantee.html">Guarantee</a>
+        <a href="contactus.html">Contact Us</a>
+        <a href="aboutus.html">About Us</a>
+        <a href="careers.html">Careers</a>
+        <a href="blog.html">Blog</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main>
+    <h1>Terms and Conditions</h1>
+    <p>Welcome to <strong>ShopEasy</strong>. By accessing or using our website and services, you agree to comply with and be bound by the following Terms and Conditions. Please read them carefully before using our platform.</p>
+
+    <h2>1. Acceptance of Terms</h2>
+    <p>By creating an account or using our services, you agree to abide by these Terms and Conditions, our Privacy Policy, and all applicable laws and regulations. If you do not agree, please discontinue use immediately.</p>
+
+    <h2>2. Use of the Website</h2>
+    <ul>
+      <li>You must be at least 18 years old or have parental consent to use ShopEasy.</li>
+      <li>You agree not to misuse our services, interfere with security, or violate any laws while using the platform.</li>
+      <li>You are responsible for maintaining the confidentiality of your account and password.</li>
+    </ul>
+
+    <h2>3. Account Responsibilities</h2>
+    <p>You agree to provide accurate, complete, and up-to-date information during registration. ShopEasy reserves the right to suspend or terminate accounts that violate these Terms or engage in fraudulent activities.</p>
+
+    <h2>4. Orders and Payments</h2>
+    <ul>
+      <li>All prices displayed are subject to change without notice.</li>
+      <li>Orders are only confirmed after payment verification.</li>
+      <li>In case of pricing errors, ShopEasy reserves the right to cancel or modify affected orders.</li>
+    </ul>
+
+    <h2>5. Returns and Refunds</h2>
+    <p>Our return and refund policies are governed by the <a href="guarantee.html">ShopEasy Guarantee</a>. Please review it carefully to understand your rights and obligations regarding product returns.</p>
+
+    <h2>6. Intellectual Property</h2>
+    <p>All content on this website, including logos, text, images, and code, is owned or licensed by ShopEasy. Unauthorized use, reproduction, or distribution of any materials is strictly prohibited.</p>
+
+    <h2>7. Limitation of Liability</h2>
+    <p>ShopEasy is not responsible for any indirect, incidental, or consequential damages arising from your use of our website or products, including but not limited to loss of profits, data, or goodwill.</p>
+
+    <h2>8. Third-Party Links</h2>
+    <p>Our site may contain links to third-party websites. We are not responsible for the content or practices of these sites. Accessing them is at your own risk.</p>
+
+    <h2>9. Termination</h2>
+    <p>We reserve the right to suspend or terminate your access at any time, without notice, if you violate these Terms or engage in unlawful activities.</p>
+
+    <h2>10. Changes to the Terms</h2>
+    <p>ShopEasy may update these Terms and Conditions periodically. Continued use of the platform after changes are made constitutes acceptance of the revised terms.</p>
+
+    <h2>11. Governing Law</h2>
+    <p>These Terms shall be governed by and construed in accordance with the laws of the Philippines, without regard to conflict of law principles.</p>
+
+    <h2>12. Contact Us</h2>
+    <p>If you have any questions about these Terms, please contact us at <a href="mailto:support@shopeasy.com">support@shopeasy.com</a>.</p>
+
+    <p style="text-align:center; margin-top:40px; color:#555;"><em>Last updated: November 2025</em></p>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div style="max-width:1200px; margin:auto; display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:40px;">
+      <div>
+        <h3>Customer Service</h3>
+        <a href="helpcentre.html">Help Centre</a><br>
+        <a href="#">Payment Methods</a><br>
+        <a href="#">Return & Refund</a><br>
+        <a href="guarantee.html">ShopEasy Guarantee</a><br>
+        <a href="contactus.html">Contact Us</a>
+      </div>
+      <div>
+        <h3>About ShopEasy</h3>
+        <a href="aboutus.html">About Us</a><br>
+        <a href="careers.html">Careers</a><br>
+        <a href="blog.html">Blog</a><br>
+        <a href="privacypolicy.html">Privacy Policy</a><br>
+        <a href="termscondition.html">Terms & Conditions</a>
+      </div>
+      <div>
+        <h3>Follow Us</h3>
+        <a href="#"><i class="fab fa-facebook"></i> Facebook</a><br>
+        <a href="#"><i class="fab fa-instagram"></i> Instagram</a><br>
+        <a href="#"><i class="fab fa-x-twitter"></i> Twitter</a>
+      </div>
+    </div>
+    <hr style="margin:40px auto; width:90%; border:0; border-top:1px solid rgba(255,255,255,0.3);">
+    <div style="text-align:center;">
+      <p>© 2025 <strong>ShopEasy</strong> | All Rights Reserved</p>
+    </div>
+  </footer>
+
+  <!-- Script -->
+  <script>
+    function toggleSidebar() {
+      document.getElementById("sidebar").classList.toggle("active");
+      document.getElementById("overlay").classList.toggle("show");
+    }
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js"></script>
+</body>
+</html>

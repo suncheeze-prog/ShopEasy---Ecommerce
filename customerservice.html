@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShopEasy - Customer Service</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background-color: #f4f6f9;
+      color: #222;
+    }
+
+    /* Header */
+    header {
+      background-color: #0078d7;
+      color: white;
+      padding: 15px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .hamburger {
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: white;
+      background: none;
+      border: none;
+      margin-right: 10px;
+      transition: transform 0.2s;
+    }
+    .hamburger:hover {
+      transform: scale(1.1);
+    }
+
+    nav a {
+      color: white;
+      margin: 0 10px;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    nav a:hover {
+      color: #bde0ff;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -260px;
+      width: 250px;
+      height: 100%;
+      background-color: #222;
+      color: white;
+      padding: 20px;
+      transition: left 0.3s ease;
+      z-index: 1000;
+      box-shadow: 3px 0 10px rgba(0, 0, 0, 0.3);
+    }
+    .sidebar.active { left: 0; }
+    .sidebar h2 {
+      margin-top: 0;
+      font-size: 1.4rem;
+      border-bottom: 2px solid white;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+    .sidebar a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      margin: 12px 0;
+      font-size: 1.1rem;
+    }
+    .sidebar a:hover { color: #bde0ff; }
+    .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.3);
+      display: none;
+      z-index: 900;
+    }
+    .overlay.show { display: block; }
+
+    /* Main Content */
+    main {
+      max-width: 1000px;
+      margin: 50px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #0078d7;
+    }
+    .help-section {
+      margin-top: 30px;
+    }
+    .help-section h2 {
+      color: #005fa3;
+      border-bottom: 2px solid #0078d7;
+      padding-bottom: 5px;
+    }
+    .faq {
+      margin-top: 15px;
+    }
+    .faq h3 {
+      color: #0078d7;
+      margin-bottom: 5px;
+    }
+    .faq p {
+      margin-top: 0;
+      color: #444;
+    }
+
+    /* Contact Form */
+    .contact-form {
+      margin-top: 40px;
+      background: #f0f7ff;
+      padding: 25px;
+      border-radius: 12px;
+    }
+    .contact-form h2 {
+      color: #005fa3;
+    }
+    .contact-form label {
+      display: block;
+      margin-top: 10px;
+      font-weight: 600;
+    }
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-top: 5px;
+      font-family: inherit;
+    }
+    .contact-form button {
+      background: #0078d7;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      margin-top: 15px;
+      cursor: pointer;
+    }
+    .contact-form button:hover {
+      background: #005fa3;
+    }
+
+    /* Footer */
+    footer {
+      background: linear-gradient(180deg, #0078d7 0%, #005fa3 100%);
+      color: white;
+      padding: 50px 20px;
+      margin-top: 50px;
+      border-top-left-radius: 30px;
+      border-top-right-radius: 30px;
+    }
+    footer a {
+      color: #e8f4ff;
+      text-decoration: none;
+    }
+    footer a:hover {
+      color: #bde0ff !important;
+      transition: 0.3s;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ✅ Sidebar -->
+ <div class="sidebar" id="sidebar">
+    <span class="close-btn" onclick="toggleSidebar()">✖</span>
+    <h2>🧰 Maintenance</h2>
+    <a href="home.html">Home</a>
+    <a href="addproduct.html">Add Product</a>
+    <a href="products.html">Products</a>
+    <a href="inventory.html">Inventory</a>
+    <a href="delivery.html">Delivery</a>
+    <a href="sales.html">Sales</a>
+    <a href="purchased.html">Purchased</a>
+    <a href="vat.html">VAT</a>
+    <a href="user.html">Create Account</a>
+  </div>
+
+  <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="header-container">
+      <div class="header-left">
+        <button class="hamburger" onclick="toggleSidebar()">☰</button>
+        <h1>ShopEasy</h1>
+      </div>
+      <nav>
+        <a href="home.html">Home</a>
+        <a href="products.html">Products</a>
+        <a href="customerservice.html">Customer Service</a>
+        <a href="helpcentre.html">Help Centre</a>
+        <a href="guarantee.html">Guarantee</a>
+        <a href="contactus.html">Contact Us</a>
+        <a href="aboutus.html">About Us</a>
+        <a href="careers.html">Careers</a>
+        <a href="blog.html">Blog</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ✅ Main Content -->
+  <main>
+    <h1>Customer Service</h1>
+
+    <div class="help-section">
+      <h2>📞 Contact Information</h2>
+      <p><strong>Email:</strong> support@shopeasy.com</p>
+      <p><strong>Phone:</strong> +63 912 345 6789</p>
+      <p><strong>Office Hours:</strong> Mon - Fri, 9:00 AM - 6:00 PM</p>
+    </div>
+
+    <div class="help-section">
+      <h2>❓ Frequently Asked Questions</h2>
+      <div class="faq">
+        <h3>How can I track my order?</h3>
+        <p>Go to the <a href="delivery.html">Delivery</a> page and enter your order number to see real-time tracking updates.</p>
+      </div>
+      <div class="faq">
+        <h3>How do I return an item?</h3>
+        <p>Visit our <a href="#">Return & Refund</a> page and follow the simple step-by-step process to initiate your return.</p>
+      </div>
+      <div class="faq">
+        <h3>Can I cancel my order?</h3>
+        <p>Orders can be canceled within 24 hours of purchase by contacting our support team.</p>
+      </div>
+    </div>
+
+    <div class="contact-form">
+      <h2>📩 Send Us a Message</h2>
+      <form id="serviceForm" onsubmit="sendMessage(event)">
+        <label for="name">Your Name:</label>
+        <input type="text" id="name" required>
+
+        <label for="email">Your Email:</label>
+        <input type="email" id="email" required>
+
+        <label for="message">Message:</label>
+        <textarea id="message" rows="5" required></textarea>
+
+        <button type="submit">Send Message</button>
+      </form>
+    </div>
+  </main>
+
+  <!-- ✅ Footer -->
+  <footer>
+    <div style="max-width:1200px; margin:auto; display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:40px;">
+      <div>
+        <h3>Customer Service</h3>
+        <a href="helpcentre.html">Help Centre</a><br>
+        <a href="#">Payment Methods</a><br>
+        <a href="#">Return & Refund</a><br>
+        <a href="#">ShopEasy Guarantee</a><br>
+        <a href="#">Contact Us</a>
+      </div>
+      <div>
+        <h3>About ShopEasy</h3>
+        <a href="#">About Us</a><br>
+        <a href="#">Careers</a><br>
+        <a href="#">Blog</a><br>
+        <a href="#">Privacy Policy</a><br>
+        <a href="#">Terms & Conditions</a>
+      </div>
+      <div>
+        <h3>Follow Us</h3>
+        <a href="#"><i class="fab fa-facebook"></i> Facebook</a><br>
+        <a href="#"><i class="fab fa-instagram"></i> Instagram</a><br>
+        <a href="#"><i class="fab fa-x-twitter"></i> Twitter</a>
+      </div>
+    </div>
+    <hr style="margin:40px auto; width:90%; border:0; border-top:1px solid rgba(255,255,255,0.3);">
+    <div style="text-align:center;">
+      <p>© 2025 <strong>ShopEasy</strong> | All Rights Reserved</p>
+    </div>
+  </footer>
+
+  <script>
+    function toggleSidebar() {
+      document.getElementById("sidebar").classList.toggle("active");
+      document.getElementById("overlay").classList.toggle("show");
+    }
+
+    function sendMessage(e) {
+      e.preventDefault();
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const message = document.getElementById("message").value.trim();
+
+      if (name && email && message) {
+        alert(`✅ Thank you, ${name}! Your message has been sent.`);
+        document.getElementById("serviceForm").reset();
+      } else {
+        alert("⚠️ Please fill out all fields before submitting.");
+      }
+    }
+  </script>
+
+  <!-- FontAwesome Icons -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js"></script>
+</body>
+</html>

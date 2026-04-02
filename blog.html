@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShopEasy - Blog</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background-color: #f4f6f9;
+      color: #222;
+    }
+
+    /* Header */
+    header {
+      background-color: #0078d7;
+      color: white;
+      padding: 15px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .hamburger {
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: white;
+      background: none;
+      border: none;
+      margin-right: 10px;
+      transition: transform 0.2s;
+    }
+    .hamburger:hover { transform: scale(1.1); }
+
+    nav a {
+      color: white;
+      margin: 0 10px;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    nav a:hover { color: #bde0ff; }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -260px;
+      width: 250px;
+      height: 100%;
+      background-color: #222;
+      color: white;
+      padding: 20px;
+      transition: left 0.3s ease;
+      z-index: 1000;
+      box-shadow: 3px 0 10px rgba(0,0,0,0.3);
+    }
+    .sidebar.active { left: 0; }
+    .sidebar h2 {
+      margin-top: 0;
+      font-size: 1.4rem;
+      border-bottom: 2px solid white;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+    .sidebar a {
+      display: block;
+      color: white;
+      text-decoration: none;
+      margin: 12px 0;
+      font-size: 1.1rem;
+    }
+    .sidebar a:hover { color: #bde0ff; }
+    .close-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.3);
+      display: none;
+      z-index: 900;
+    }
+    .overlay.show { display: block; }
+
+    /* Main */
+    main {
+      max-width: 1100px;
+      margin: 50px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #0078d7;
+      margin-bottom: 20px;
+    }
+    .intro {
+      text-align: center;
+      color: #555;
+      margin-bottom: 40px;
+      font-size: 1.1rem;
+    }
+
+    /* Blog Cards */
+    .blog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
+    }
+    .blog-card {
+      background: #f9fbff;
+      border: 1px solid #d7e9ff;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: 0.3s;
+    }
+    .blog-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .blog-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+    .blog-content {
+      padding: 20px;
+    }
+    .blog-content h3 {
+      color: #0078d7;
+      margin-bottom: 10px;
+    }
+    .blog-content p {
+      color: #444;
+      font-size: 0.95rem;
+      margin-bottom: 15px;
+    }
+    .read-btn {
+      background-color: #0078d7;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 8px 15px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .read-btn:hover { background-color: #005fa3; }
+
+    /* Subscribe */
+    .subscribe {
+      background: #f0f7ff;
+      border: 1px solid #cfe4ff;
+      border-radius: 10px;
+      padding: 25px;
+      text-align: center;
+      margin-top: 50px;
+    }
+    .subscribe h2 {
+      color: #0078d7;
+      margin-bottom: 15px;
+    }
+    .subscribe input {
+      padding: 10px;
+      width: 250px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin-right: 10px;
+    }
+    .subscribe button {
+      background-color: #0078d7;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .subscribe button:hover { background-color: #005fa3; }
+
+    /* Footer */
+    footer {
+      background: linear-gradient(180deg, #0078d7 0%, #005fa3 100%);
+      color: white;
+      padding: 50px 20px;
+      margin-top: 50px;
+      border-top-left-radius: 30px;
+      border-top-right-radius: 30px;
+    }
+    footer a {
+      color: #e8f4ff;
+      text-decoration: none;
+    }
+    footer a:hover { color: #bde0ff; transition: 0.3s; }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <span class="close-btn" onclick="toggleSidebar()">✖</span>
+    <h2>🧰 Maintenance</h2>
+    <a href="home.html">Home</a>
+    <a href="addproduct.html">Add Product</a>
+    <a href="products.html">Products</a>
+    <a href="inventory.html">Inventory</a>
+    <a href="delivery.html">Delivery</a>
+    <a href="sales.html">Sales</a>
+    <a href="purchased.html">Purchased</a>
+    <a href="vat.html">VAT</a>
+    <a href="user.html">Create Account</a>
+  </div>
+
+  <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="header-container">
+      <div class="header-left">
+        <button class="hamburger" onclick="toggleSidebar()">☰</button>
+        <h1>ShopEasy</h1>
+      </div>
+      <nav>
+        <a href="home.html">Home</a>
+        <a href="products.html">Products</a>
+        <a href="customerservice.html">Customer Service</a>
+        <a href="helpcentre.html">Help Centre</a>
+        <a href="guarantee.html">Guarantee</a>
+        <a href="contactus.html">Contact Us</a>
+        <a href="aboutus.html">About Us</a>
+        <a href="careers.html">Careers</a>
+        <a href="blog.html">Blog</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main>
+    <h1>ShopEasy Blog</h1>
+    <p class="intro">Read the latest tips, trends, and updates from ShopEasy — your trusted online shopping companion.</p>
+
+    <div class="blog-grid">
+      <div class="blog-card">
+        <img src="https://via.placeholder.com/400x180?text=Online+Shopping+Tips" alt="Blog 1">
+        <div class="blog-content">
+          <h3>5 Tips for Smarter Online Shopping</h3>
+          <p>Learn how to make the most of your online shopping experience — from comparing prices to checking reviews.</p>
+          <button class="read-btn">Read More</button>
+        </div>
+      </div>
+
+      <div class="blog-card">
+        <img src="https://via.placeholder.com/400x180?text=Ecommerce+Trends" alt="Blog 2">
+        <div class="blog-content">
+          <h3>Top E-Commerce Trends in 2025</h3>
+          <p>Explore the latest innovations shaping online retail and what they mean for consumers and sellers.</p>
+          <button class="read-btn">Read More</button>
+        </div>
+      </div>
+
+      <div class="blog-card">
+        <img src="https://via.placeholder.com/400x180?text=Customer+Trust" alt="Blog 3">
+        <div class="blog-content">
+          <h3>Building Trust in Online Transactions</h3>
+          <p>Discover how platforms like ShopEasy ensure your safety and privacy every time you shop.</p>
+          <button class="read-btn">Read More</button>
+        </div>
+      </div>
+
+      <div class="blog-card">
+        <img src="https://via.placeholder.com/400x180?text=ShopEasy+Updates" alt="Blog 4">
+        <div class="blog-content">
+          <h3>ShopEasy Launches New Seller Tools</h3>
+          <p>We’re empowering small businesses with better insights, easier product management, and improved delivery tracking.</p>
+          <button class="read-btn">Read More</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="subscribe">
+      <h2>📬 Stay Updated</h2>
+      <p>Subscribe to get our latest blog posts and ShopEasy updates delivered to your inbox!</p>
+      <input type="email" placeholder="Enter your email address" required>
+      <button>Subscribe</button>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div style="max-width:1200px; margin:auto; display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:40px;">
+      <div>
+        <h3>Customer Service</h3>
+        <a href="helpcentre.html">Help Centre</a><br>
+        <a href="#">Payment Methods</a><br>
+        <a href="#">Return & Refund</a><br>
+        <a href="guarantee.html">ShopEasy Guarantee</a><br>
+        <a href="contactus.html">Contact Us</a>
+      </div>
+      <div>
+        <h3>About ShopEasy</h3>
+        <a href="aboutus.html">About Us</a><br>
+        <a href="careers.html">Careers</a><br>
+        <a href="blog.html">Blog</a><br>
+        <a href="#">Privacy Policy</a><br>
+        <a href="#">Terms & Conditions</a>
+      </div>
+      <div>
+        <h3>Follow Us</h3>
+        <a href="#"><i class="fab fa-facebook"></i> Facebook</a><br>
+        <a href="#"><i class="fab fa-instagram"></i> Instagram</a><br>
+        <a href="#"><i class="fab fa-x-twitter"></i> Twitter</a>
+      </div>
+    </div>
+    <hr style="margin:40px auto; width:90%; border:0; border-top:1px solid rgba(255,255,255,0.3);">
+    <div style="text-align:center;">
+      <p>© 2025 <strong>ShopEasy</strong> | All Rights Reserved</p>
+    </div>
+  </footer>
+
+  <!-- Script -->
+  <script>
+    function toggleSidebar() {
+      document.getElementById("sidebar").classList.toggle("active");
+      document.getElementById("overlay").classList.toggle("show");
+    }
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/js/all.min.js"></script>
+</body>
+</html>

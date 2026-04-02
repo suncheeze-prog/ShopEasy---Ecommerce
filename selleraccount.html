@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShopEasy - Create Seller Account</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #764ba2;
+      --secondary: #667eea;
+      --accent: #43e97b;
+      --glass: rgba(255, 255, 255, 0.95);
+      --text-dark: #333;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+    body {
+      background: linear-gradient(-45deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 100%);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+      min-height: 100vh;
+      padding-bottom: 50px;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    header {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(15px);
+      padding: 15px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: white;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .back-btn-top {
+      background: white; color: var(--primary); border: none;
+      padding: 8px 18px; border-radius: 20px; cursor: pointer;
+      font-weight: 600; transition: 0.3s; text-decoration: none;
+      display: flex; align-items: center; gap: 8px; font-size: 0.9rem;
+    }
+    .back-btn-top:hover { transform: translateX(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+
+    .container {
+      max-width: 600px; margin: 40px auto;
+      background: var(--glass); border-radius: 30px;
+      padding: 40px; box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+    }
+
+    h2 { 
+      color: var(--primary); margin-bottom: 10px; font-weight: 800; text-align: center;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+
+    .profile-container { text-align: center; margin-bottom: 30px; }
+    .profile-preview {
+      width: 140px; height: 140px; border-radius: 50%; object-fit: cover;
+      border: 4px solid white; box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      margin-bottom: 15px; cursor: pointer; transition: 0.3s;
+    }
+    .profile-preview:hover { transform: scale(1.05); }
+
+    .upload-label {
+      background: var(--secondary); color: white; padding: 10px 20px;
+      border-radius: 20px; font-size: 0.85rem; cursor: pointer; font-weight: 600;
+    }
+
+    #profile-pic { display: none; }
+
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .full-width { grid-column: span 2; }
+
+    .form-group { margin-bottom: 15px; }
+    label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; font-size: 0.9rem; }
+
+    input, select {
+      width: 100%; padding: 12px 15px; border-radius: 12px; border: 2px solid #eee;
+      font-size: 0.95rem; transition: 0.3s; outline: none;
+    }
+    input:focus, select:focus { border-color: var(--secondary); box-shadow: 0 0 10px rgba(102, 126, 234, 0.1); }
+
+    .password-wrapper { position: relative; }
+    .toggle-password {
+      position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
+      cursor: pointer; color: #888;
+    }
+
+    .submit-btn {
+      width: 100%; padding: 16px; background: linear-gradient(to right, var(--secondary), var(--primary));
+      color: white; border: none; border-radius: 15px; font-weight: 700; font-size: 1.1rem;
+      cursor: pointer; margin-top: 20px; transition: 0.3s; box-shadow: 0 10px 20px rgba(118, 75, 162, 0.3);
+    }
+    .submit-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 25px rgba(118, 75, 162, 0.4); }
+
+    .back-link {
+      display: block; text-align: center; margin-top: 20px; color: #777;
+      text-decoration: none; font-size: 0.9rem; font-weight: 500;
+    }
+    .back-link:hover { color: var(--primary); text-decoration: underline; }
+
+    /* Success/Error Alerts */
+    .success-message, .error-message {
+      padding: 15px; border-radius: 12px; text-align: center; font-weight: 600;
+      margin-bottom: 20px; display: none; font-size: 0.9rem;
+    }
+    .success-message { background: #d1fae5; color: #065f46; border: 1px solid #34d399; }
+    .error-message { background: #fee2e2; color: #991b1b; border: 1px solid #f87171; }
+
+    #crop-container { text-align: center; margin: 20px 0; padding: 20px; background: #f8f9fa; border-radius: 20px; }
+    #crop-container.hidden { display: none; }
+    #crop-image { max-width: 100%; border-radius: 10px; }
+    .crop-overlay { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 200px; height: 200px; pointer-events: none; border-radius: 50%; border: 3px dashed var(--secondary); box-sizing: border-box; }
+
+    footer { text-align: center; color: white; margin-top: 40px; font-size: 0.8rem; }
+
+    @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } .full-width { grid-column: span 1; } }
+  </style>
+</head>
+<body>
+
+<header>
+  <div style="font-size: 1.5rem; font-weight: 700;">ShopEasy</div>
+  <a href="login.html" class="back-btn-top"><i class="fas fa-arrow-left"></i> Back to Login</a>
+</header>
+
+<main>
+  <div class="container">
+    <h2>Seller Registration</h2>
+    <p style="text-align: center; color: #777; margin-bottom: 25px; font-size: 0.9rem;">Join our community of sellers and start earning!</p>
+
+    <div class="profile-container">
+      <img id="profilePreview" class="profile-preview" src="https://via.placeholder.com/140/667eea/ffffff?text=Upload" alt="Profile Preview">
+      <br>
+      <label for="profile-pic" class="upload-label"><i class="fas fa-camera"></i> Upload Photo</label>
+      <input type="file" id="profile-pic" accept="image/*">
+    </div>
+
+    <div id="crop-container" class="hidden">
+      <div style="position:relative; display:inline-block;">
+        <img id="crop-image" />
+        <div class="crop-overlay"></div>
+      </div>
+      <br>
+      <button type="button" id="crop-btn" style="background:var(--accent); color:#155724; border:none; padding:10px 20px; border-radius:10px; font-weight:700; cursor:pointer; margin-top:10px;">
+        <i class="fas fa-cut"></i> Confirm Crop
+      </button>
+    </div>
+
+    <div class="success-message" id="success-msg"></div>
+    <div class="error-message" id="error-msg"></div>
+
+    <form id="register-form">
+      <div class="form-grid">
+        <div class="form-group full-width">
+          <label><i class="fas fa-user"></i> Full Name</label>
+          <input type="text" id="fullName" placeholder="Juan Dela Cruz" required>
+        </div>
+
+        <div class="form-group">
+          <label><i class="fas fa-at"></i> Username</label>
+          <input type="text" id="username" placeholder="juandc123" required>
+        </div>
+
+        <div class="form-group">
+          <label><i class="fas fa-phone"></i> Phone</label>
+          <input type="text" id="phone" placeholder="09123456789" maxlength="11" required>
+        </div>
+
+        <div class="form-group full-width">
+          <label><i class="fas fa-envelope"></i> Email Address</label>
+          <input type="email" id="email" placeholder="you@example.com" required>
+        </div>
+
+        <div class="form-group full-width">
+          <label><i class="fas fa-map-marker-alt"></i> Complete Address</label>
+          <input type="text" id="address" placeholder="Barangay, City, Province" required>
+        </div>
+
+        <div class="form-group">
+          <label><i class="fas fa-lock"></i> Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="password" placeholder="Min. 6 chars" required>
+            <span class="toggle-password" onclick="togglePassword('password')"><i class="fas fa-eye"></i></span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label><i class="fas fa-shield-alt"></i> Confirm</label>
+          <div class="password-wrapper">
+            <input type="password" id="confirmPassword" placeholder="Repeat password" required>
+            <span class="toggle-password" onclick="togglePassword('confirmPassword')"><i class="fas fa-eye"></i></span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label><i class="fas fa-venus-mars"></i> Gender</label>
+          <select id="gender" required>
+            <option value="">Select</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label><i class="fas fa-calendar-day"></i> Birthdate</label>
+          <input type="date" id="birthdate" required>
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn">Create Seller Account</button>
+      <a href="login.html" class="back-link">Already have an account? Sign In</a>
+    </form>
+  </div>
+</main>
+
+<footer>
+  <p>© 2025 ShopEasy | Dedicated Seller Platform</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
+<script>
+// --- FUNCTIONS REMAIN UNCHANGED AS REQUESTED ---
+let cropper;
+let croppedImageData = "";
+
+const profileInput = document.getElementById("profile-pic");
+const profilePreview = document.getElementById("profilePreview");
+const form = document.getElementById("register-form");
+
+function togglePassword(fieldId) {
+  const field = document.getElementById(fieldId);
+  field.type = field.type === 'password' ? 'text' : 'password';
+}
+
+function showMessage(type, text) {
+  const errorMsg = document.getElementById("error-msg");
+  const successMsg = document.getElementById("success-msg");
+  errorMsg.style.display = "none";
+  successMsg.style.display = "none";
+  if (type === 'error') {
+    errorMsg.textContent = text;
+    errorMsg.style.display = "block";
+  } else {
+    successMsg.textContent = text;
+    successMsg.style.display = "block";
+  }
+}
+
+profileInput.addEventListener("change", function () {
+  const file = this.files[0];
+  if (!file) return;
+  if (!file.type.startsWith('image/')) {
+    showMessage('error', '⚠️ Please select a valid image file.');
+    this.value = "";
+    return;
+  }
+  if (file.size > 5 * 1024 * 1024) {
+    showMessage('error', '⚠️ Image size must be less than 5MB.');
+    this.value = "";
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = function () {
+    const cropContainer = document.getElementById("crop-container");
+    cropContainer.classList.remove("hidden");
+    cropContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const cropImage = document.getElementById("crop-image");
+    cropImage.src = reader.result;
+    if (cropper) cropper.destroy();
+    cropper = new Cropper(cropImage, {
+      aspectRatio: 1,
+      viewMode: 1,
+      dragMode: "move",
+      movable: true,
+      zoomable: true,
+      rotatable: false,
+      scalable: false,
+      background: false,
+      guides: false,
+      modal: true,
+      autoCrop: true,
+      autoCropArea: 1,
+    });
+  };
+  reader.readAsDataURL(file);
+});
+
+document.getElementById("crop-btn").addEventListener("click", function () {
+  if (!cropper) return;
+  const canvas = cropper.getCroppedCanvas({ width: 200, height: 200 });
+  if (!canvas) {
+    showMessage('error', '⚠️ Failed to crop image. Please try again.');
+    return;
+  }
+  const circleCanvas = document.createElement("canvas");
+  circleCanvas.width = canvas.width;
+  circleCanvas.height = canvas.height;
+  const ctx = circleCanvas.getContext("2d");
+  ctx.beginPath();
+  ctx.arc(canvas.width / 2, canvas.height / 2, canvas.width / 2, 0, Math.PI * 2);
+  ctx.closePath();
+  ctx.clip();
+  ctx.drawImage(canvas, 0, 0);
+  croppedImageData = circleCanvas.toDataURL("image/png");
+  profilePreview.src = croppedImageData;
+  document.getElementById("crop-container").classList.add("hidden");
+  cropper.destroy();
+  cropper = null;
+  showMessage('success', '✅ Profile picture cropped successfully!');
+  setTimeout(() => { document.getElementById("success-msg").style.display = "none"; }, 2000);
+});
+
+form.addEventListener("submit", async function (e) {
+  e.preventDefault();
+  const fullName = document.getElementById("fullName").value.trim();
+  const username = document.getElementById("username").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const address = document.getElementById("address").value.trim();
+  const password = document.getElementById("password").value;
+  const confirmPassword = document.getElementById("confirmPassword").value;
+  const gender = document.getElementById("gender").value;
+  const birthdate = document.getElementById("birthdate").value;
+  const submitBtn = form.querySelector("button[type='submit']");
+
+  if (!croppedImageData || croppedImageData === "") {
+    showMessage('error', '⚠️ Please upload and crop a profile picture.');
+    document.getElementById("crop-container").scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    showMessage('error', '❌ Passwords do not match.');
+    return;
+  }
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Creating Account...";
+
+  try {
+    const requestData = { fullName, username, email, phone, address, password, gender, birthdate, profilePicture: croppedImageData, role: "seller" };
+    const response = await fetch("http://localhost:4000/api/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(requestData)
+    });
+
+    const data = await response.json();
+    if (response.ok && data.success) {
+      showMessage('success', '✅ Account created! Auto-logging in...');
+      if (data.user) {
+        localStorage.setItem('userId', data.user._id);
+        localStorage.setItem('role', data.user.role);
+        localStorage.setItem('username', data.user.username);
+        localStorage.setItem('fullName', data.user.fullName);
+        localStorage.setItem('email', data.user.email);
+        localStorage.setItem('profilePicture', data.user.profilePicture);
+      }
+      form.reset();
+      setTimeout(() => { window.location.href = "home.html"; }, 2000);
+    } else {
+      showMessage('error', '⚠️ ' + (data.message || "Registration failed"));
+    }
+  } catch (error) {
+    showMessage('error', '❌ Connection error. Please check your server.');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Create Seller Account";
+  }
+});
+</script>
+</body>
+</html>
