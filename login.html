@@ -206,19 +206,26 @@
   </form>
 
   <form id="register-form" class="hidden">
-    <h2>Create Account</h2>
-    <input type="text" id="full-name" placeholder="Full Name" required />
-    <input type="text" id="new-username" placeholder="Username" required />
-    <input type="email" id="email" placeholder="Email" required />
-    <input type="text" id="phone" placeholder="Phone Number" maxlength="11" required />
-    <input type="text" id="address" placeholder="Address" required />
-    <div class="field-wrapper">
-      <input type="password" id="new-password" placeholder="Password" required />
-      <i class="fas fa-eye toggle-password" onclick="togglePass('new-password', this)"></i>
-    </div>
-    <button type="submit" id="register-btn">Register</button>
-    <p>Already have an account? <span id="login-link">Login</span></p>
-  </form>
+  <h2>Create Account</h2>
+  <input type="text" id="full-name" placeholder="Full Name" required />
+  <input type="text" id="new-username" placeholder="Username" required />
+  <input type="email" id="email" placeholder="Email" required />
+  <input type="text" id="phone" placeholder="Phone Number" maxlength="11" required />
+  <input type="text" id="address" placeholder="Address" required />
+  <select id="new-gender" required>
+    <option value="">-- Select Gender --</option>
+    <option value="Male">Male</option>
+    <option value="Female">Female</option>
+    <option value="Other">Other</option>
+  </select>
+  <input type="date" id="new-birthdate" required />
+  <div class="field-wrapper">
+    <input type="password" id="new-password" placeholder="Password" required />
+    <i class="fas fa-eye toggle-password" onclick="togglePass('new-password', this)"></i>
+  </div>
+  <button type="submit" id="register-btn">Register</button>
+  <p>Already have an account? <span id="login-link">Login</span></p>
+</form>
 
   <form id="forgot-form" class="hidden">
     <h2>Forgot Password</h2>
@@ -346,6 +353,8 @@ registerForm.addEventListener("submit", async e => {
     phone: document.getElementById("phone").value.trim(),
     address: document.getElementById("address").value.trim(),
     password: document.getElementById("new-password").value.trim(),
+    gender: document.getElementById("new-gender").value,
+    birthdate: document.getElementById("new-birthdate").value,
     role: "buyer"
   };
   try {
