@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const Purchased = require("./models/Purchased");
 
 // IMPORTANT: Update this with your MongoDB connection string
-const MONGO_URI = "mongodb://127.0.0.1:27017/mydb";
+const MONGO_URI = "mongoose.connect(process.env.MONGODB_URI)/mydb";
 
 async function migrateData() {
   try {
