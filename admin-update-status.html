@@ -42,7 +42,7 @@ button:hover { background: #005fa3; }
 
 <script>
 async function loadOrders() {
-  const res = await fetch("http://localhost:4000/api/purchased");
+  const res = await fetch("https://shopeasy-ecommerce-1-0bpu.onrender.com/api/purchased");
   const orders = await res.json();
   const tbody = document.getElementById("admin-body");
 
@@ -76,7 +76,7 @@ async function loadOrders() {
 async function updateStatus(id) {
   const newStatus = document.getElementById(`status-${id}`).value;
 
-  await fetch(`http://localhost:4000/api/purchased/update-status/${id}`, {
+  await fetch(`https://shopeasy-ecommerce-1-0bpu.onrender.com/api/purchased/update-status/${id}`, {
   method: "PUT",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({ deliveryStatus: newStatus })

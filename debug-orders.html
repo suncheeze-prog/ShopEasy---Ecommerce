@@ -128,7 +128,7 @@ async function loadData() {
 
   // Load Cart Data
   try {
-    const cartRes = await fetch(`http://localhost:4000/api/cart/${userId}`);
+    const cartRes = await fetch(`https://shopeasy-ecommerce-1-0bpu.onrender.com api/cart/${userId}`);
     const cartData = await cartRes.json();
     document.getElementById("cart-data").textContent = JSON.stringify(cartData, null, 2);
   } catch (error) {
@@ -137,7 +137,7 @@ async function loadData() {
 
   // Load Purchased Data
   try {
-    const purchasedRes = await fetch(`http://localhost:4000/api/purchased?userId=${userId}`);
+    const purchasedRes = await fetch(`https://shopeasy-ecommerce-1-0bpu.onrender.com/api/purchased?userId=${userId}`);
     const purchasedData = await purchasedRes.json();
     document.getElementById("purchased-data").textContent = JSON.stringify(purchasedData, null, 2);
 

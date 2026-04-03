@@ -657,7 +657,7 @@
       emptyState.style.display = "none";
 
       try {
-        const response = await fetch("http://localhost:4000/api/users");
+        const response = await fetch("https://shopeasy-ecommerce-1-0bpu.onrender.com/api/users");
         const data = await response.json();
 
         console.log("📥 Users loaded:", data);
@@ -838,7 +838,7 @@
       if (!userToDelete) return;
 
       try {
-        const response = await fetch(`http://localhost:4000/api/users/${userToDelete}`, {
+        const response = await fetch(`https://shopeasy-ecommerce-1-0bpu.onrender.com/api/users/${userToDelete}`, {
           method: "DELETE"
         });
 

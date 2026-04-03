@@ -170,7 +170,7 @@ async function loadCartFromDB() {
     return; 
   }
   try {
-    const response = await fetch(`http://localhost:4000/api/cart/${userId}`);
+    const response = await fetch(`https://shopeasy-ecommerce-1-0bpu.onrender.com/api/cart/${userId}`);
     const data = await response.json();
     cart = data.success ? (data.items || []) : [];
     renderCart();
@@ -214,7 +214,7 @@ function renderCart() {
 
 async function removeItem(itemId) {
   try {
-    const response = await fetch(`http://localhost:4000/api/cart/remove/${userId}/${itemId}`, { method: "DELETE" });
+    const response = await fetch(`https://shopeasy-ecommerce-1-0bpu.onrender.com/api/cart/remove/${userId}/${itemId}`, { method: "DELETE" });
     const data = await response.json();
     if (data.success) { 
       cart = data.items; 
@@ -236,7 +236,7 @@ document.getElementById("clear-cart").addEventListener("click", () => {
 
 async function confirmClearCart() {
   try {
-    await fetch(`http://localhost:4000/api/cart/clear/${userId}`, { method: "DELETE" });
+    await fetch(`https://shopeasy-ecommerce-1-0bpu.onrender.com/api/cart/clear/${userId}`, { method: "DELETE" });
     cart = []; 
     renderCart();
     document.getElementById("confirm-popup").classList.remove("show");
@@ -302,7 +302,7 @@ async function checkout() {
   console.log("📦 Checkout Data:", purchaseData); // Debug log
 
   try {
-    const response = await fetch("http://localhost:4000/api/purchased/add", {
+    const response = await fetch("https://shopeasy-ecommerce-1-0bpu.onrender.com/api/purchased/add", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ items: purchaseData })
@@ -313,7 +313,7 @@ async function checkout() {
     if (response.ok && result.success) {
       // Remove purchased items from cart
       for (const item of selectedItems) {
-        await fetch(`http://localhost:4000/api/cart/remove/${userId}/${item._id}`, { method: "DELETE" });
+        await fetch(`https://shopeasy-ecommerce-1-0bpu.onrender.com/api/cart/remove/${userId}/${item._id}`, { method: "DELETE" });
       }
       
       // Show success popup
