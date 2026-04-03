@@ -308,22 +308,32 @@
       box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
     }
 
-    .filter-btn {
-      position: fixed;
-      top: 150px;
-      left: 20px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 60px;
-      height: 60px;
-      font-size: 1.5rem;
-      cursor: pointer;
-      box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
-      z-index: 1000;
-      transition: all 0.3s ease;
-    }
+   .filter-btn {
+  position: fixed;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 0 25px 25px 0;
+  width: 36px;
+  height: 80px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 3px 0 15px rgba(102, 126, 234, 0.4);
+  z-index: 998;
+  transition: all 0.3s ease;
+  writing-mode: vertical-rl;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.filter-btn:hover {
+  width: 44px;
+  box-shadow: 5px 0 20px rgba(102, 126, 234, 0.5);
+}
 
     .filter-btn:hover {
       transform: scale(1.1) rotate(90deg);
@@ -1071,25 +1081,48 @@
     }
 
     /* Responsive */
-    @media (max-width: 768px) {
-      .nav-container {
-        display: none;
-      }
+  @media (max-width: 768px) {
+  .nav-container {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-end;
+  }
 
-      .product-grid {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 20px;
-      }
+  .nav-container a {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+  }
 
-      .search-area input {
-        width: 100%;
-        max-width: 280px;
-      }
+  .profile-btn {
+    padding: 6px 10px;
+    font-size: 0.75rem;
+  }
 
-      h1 {
-        font-size: 1.4rem;
-      }
-    }
+  .profile-btn span {
+    display: none;
+  }
+
+  #logout-btn {
+    padding: 6px 12px;
+    font-size: 0.75rem;
+  }
+
+  .header-container {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  h1 {
+    font-size: 1.2rem;
+  }
+
+  .product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 15px;
+  }
+}
+
 #loader-wrapper {
     position: fixed;
     top: 0; left: 0;
@@ -1286,9 +1319,9 @@
     <button onclick="toggleFilterSidebar()">Close Filters</button>
   </div>
 
-  <button class="filter-btn" onclick="toggleFilterSidebar()">
-    <i class="fas fa-sliders-h"></i>
-  </button>
+ <button class="filter-btn" onclick="toggleFilterSidebar()">
+  <i class="fas fa-sliders-h"></i>
+</button>
 
   <!-- Floating Ad -->
   <div id="spinAd" class="spin-ad">
