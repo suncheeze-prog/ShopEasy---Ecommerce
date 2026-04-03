@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const Purchased = require("../models/purchased");
+const Purchased = require("../models/Purchased");
 const Product = require('../models/Product');
 
 // Add purchase - FIXED VERSION
