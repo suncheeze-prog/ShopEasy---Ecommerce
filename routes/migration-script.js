@@ -2,7 +2,7 @@
 // Run this ONCE to update existing purchased items with missing fields
 
 const mongoose = require("mongoose");
-const Purchased = require("./models/purchased");
+const Purchased = require("./models/Purchased");
 
 // IMPORTANT: Update this with your MongoDB connection string
 const MONGO_URI = "mongodb://127.0.0.1:27017/mydb";
