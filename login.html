@@ -349,7 +349,7 @@ registerForm.addEventListener("submit", async e => {
     role: "buyer"
   };
   try {
-    const res = await fetch("http://localhost:4000/api/register", {
+    const res = await fetch("https://shopeasy-ecommerce-1-0bpu.onrender.com/api/register", {
       method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(newUser)
     });
     const result = await res.json();
@@ -370,7 +370,7 @@ loginForm.addEventListener("submit", async e => {
     password: document.getElementById("password").value.trim()
   };
   try {
-    const res = await fetch("http://localhost:4000/api/login", {
+    const res = await fetch("https://shopeasy-ecommerce-1-0bpu.onrender.com/api/login", {
       method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(loginData)
     });
     const result = await res.json();
@@ -389,7 +389,7 @@ forgotForm.addEventListener("submit", async e => {
   e.preventDefault();
   userEmail = document.getElementById("forgot-email").value.trim();
   try {
-    const res = await fetch("http://localhost:4000/api/forgot-password", {
+    const res = await fetch("https://shopeasy-ecommerce-1-0bpu.onrender.com/api/forgot-password", {
       method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ email: userEmail })
     });
     const result = await res.json();
@@ -409,7 +409,7 @@ otpForm.addEventListener("submit", async e => {
     message.style.color = "red"; message.textContent = "❌ Mismatch Password"; return;
   }
   try {
-    const res = await fetch("http://localhost:4000/api/verify-otp", {
+    const res = await fetch("https://shopeasy-ecommerce-1-0bpu.onrender.com/api/verify-otp", {
       method: "POST", headers: {"Content-Type": "application/json"},
       body: JSON.stringify({ email: userEmail, otp: otp, newPassword: newPassword })
     });
@@ -425,7 +425,7 @@ otpForm.addEventListener("submit", async e => {
 
 resendOtp.addEventListener("click", async () => {
   try {
-    await fetch("http://localhost:4000/api/forgot-password", {
+    await fetch("https://shopeasy-ecommerce-1-0bpu.onrender.com/api/forgot-password", {
       method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({ email: userEmail })
     });
     startCountdown();

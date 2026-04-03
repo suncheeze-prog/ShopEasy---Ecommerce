@@ -204,7 +204,7 @@
       }
 
       try {
-        const response = await fetch("http://localhost:4000/api/vat/set", {
+        const response = await fetch("https://shopeasy-ecommerce-1-0bpu.onrender.com/api/vat/set", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -241,7 +241,7 @@
 
     window.onload = async function() {
       try {
-        const response = await fetch("http://localhost:4000/api/vat/get");
+        const response = await fetch("https://shopeasy-ecommerce-1-0bpu.onrender.com/api/vat/get");
         const result = await response.json();
         
         if (result.success) {

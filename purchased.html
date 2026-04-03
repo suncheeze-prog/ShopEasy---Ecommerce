@@ -249,7 +249,7 @@
 
   try {
     // Nagdagdag tayo ng query parameter na ?userId=
-    const res = await fetch(`http://localhost:4000/api/purchased?userId=${userId}`);
+    const res = await fetch(`https://shopeasy-ecommerce-1-0bpu.onrender.com/api/purchased?userId=${userId}`);
     purchased = await res.json();
 
     // Kunin ang mga unique dates para sa filter

@@ -253,7 +253,7 @@ async function loadSellerOrders() {
   debugContent.innerHTML = `
     <strong>Seller ID:</strong> ${sellerId || "❌ Not found"}<br>
     <strong>Role:</strong> ${role || "❌ Not found"}<br>
-    <strong>API Endpoint:</strong> http://localhost:4000/api/seller/orders?sellerId=${sellerId}
+    <strong>API Endpoint:</strong> https://shopeasy-ecommerce-1-0bpu.onrender.com/api/seller/orders?sellerId=${sellerId}
   `;
   
   console.log("=== SELLER ORDER DEBUG ===");
@@ -284,7 +284,7 @@ async function loadSellerOrders() {
   try {
     console.log("📡 Fetching orders from API...");
     
-    const res = await fetch(`http://localhost:4000/api/seller/orders?sellerId=${sellerId}`);
+    const res = await fetch(`https://shopeasy-ecommerce-1-0bpu.onrender.com/api/seller/orders?sellerId=${sellerId}`);
     
     console.log("📥 Response status:", res.status);
     
@@ -380,7 +380,7 @@ async function updateStatus(orderId) {
   console.log("Updating order:", orderId, "to status:", newStatus);
   
   try {
-    const res = await fetch(`http://localhost:4000/api/orders/update-status`, {
+    const res = await fetch(`https://shopeasy-ecommerce-1-0bpu.onrender.com/api/orders/update-status`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ orderId, status: newStatus })

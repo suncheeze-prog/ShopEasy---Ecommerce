@@ -383,7 +383,7 @@ function changeQty(val) {
 async function loadWishlist() {
   if (!userId) return;
   try {
-      const res = await fetch(`http://localhost:4000/api/wishlist/${userId}`);
+      const res = await fetch(`https://shopeasy-ecommerce-1-0bpu.onrender.com/api/wishlist/${userId}`);
       const data = await res.json();
       if (data.success) {
         wishlist = data.products;
@@ -414,7 +414,7 @@ async function addToCart(redirect = false) {
   };
 
   try {
-    const res = await fetch("http://localhost:4000/api/cart/add", {
+    const res = await fetch("https://shopeasy-ecommerce-1-0bpu.onrender.com/api/cart/add", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(cartItem)
@@ -492,7 +492,7 @@ async function submitReview() {
     });
 
     try {
-        const res = await fetch("http://localhost:4000/api/reviews/add", {
+        const res = await fetch("https://shopeasy-ecommerce-1-0bpu.onrender.com/api/reviews/add", {
             method: "POST",
             body: formData 
         });
@@ -543,7 +543,7 @@ function simulateAddReview(text, rating, images) {
 
 async function loadReviews() {
     try {
-        const res = await fetch(`http://localhost:4000/api/reviews/${product._id}`);
+        const res = await fetch(`https://shopeasy-ecommerce-1-0bpu.onrender.com/api/reviews/${product._id}`);
         const data = await res.json();
         const list = document.getElementById("reviews-list");
 
@@ -559,7 +559,7 @@ async function loadReviews() {
                 if (r.userAvatar) {
                     finalAvatar = r.userAvatar.startsWith("http") 
                         ? r.userAvatar 
-                        : `http://localhost:4000${r.userAvatar}`;
+                        : `https://shopeasy-ecommerce-1-0bpu.onrender.com${r.userAvatar}`;
                 } else {
                     finalAvatar = `https://ui-avatars.com/api/?name=${r.userName}&background=random&color=fff`;
                 }
@@ -614,7 +614,7 @@ document.getElementById("buy-now-btn").onclick = () => addToCart(true);
 document.getElementById("wishlist-btn").onclick = async () => {
   if (!userId) return;
   const exists = wishlist.some(item => item._id === product._id);
-  const url = exists ? `http://localhost:4000/api/wishlist/remove/${userId}/${product._id}` : `http://localhost:4000/api/wishlist/add`;
+  const url = exists ? `https://shopeasy-ecommerce-1-0bpu.onrender.com/api/wishlist/remove/${userId}/${product._id}` : `https://shopeasy-ecommerce-1-0bpu.onrender.com/api/wishlist/add`;
   const method = exists ? "DELETE" : "POST";
   
   const res = await fetch(url, {
