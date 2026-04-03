@@ -23,7 +23,7 @@ app.use((req, res, next) => {
 
 // ✅ Connect to MongoDB (NO MORE WARNINGS!)
 mongoose
-  .connect("mongodb://127.0.0.1:27017/mydb")
+  .connect(process.env.MONGODB_URI)
   .then(() => console.log("🚀 MongoDB Connected"))
   .catch((err) => console.error("❌ MongoDB connection error:", err));
 
@@ -63,8 +63,8 @@ const User = mongoose.model('User', userSchema);
 // ⚠️ IMPORTANTE: Palitan ang credentials below!
 
 // OPTION 1: Try with App Password (Recommended)
-const SENDER_EMAIL = 'sanchezallen2003@gmail.com';     // ← Your actual Gmail
-const SENDER_APP_PASSWORD = 'oomw alha ypeq jaos'; // ← Generate from Google
+const SENDER_EMAIL = process.env.SENDER_EMAIL;
+const SENDER_APP_PASSWORD = process.env.SENDER_APP_PASSWORD; // ← Generate from Google
 
 // OPTION 2: If App Password doesn't work, try Less Secure Apps method
 // Enable it at: https://myaccount.google.com/lesssecureapps
