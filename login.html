@@ -207,6 +207,15 @@
 
   <form id="register-form" class="hidden">
   <h2>Create Account</h2>
+   <div style="text-align:center; margin-bottom:15px;">
+  <img id="reg-profile-preview" src="https://via.placeholder.com/100/667eea/ffffff?text=Upload" 
+    style="width:100px; height:100px; border-radius:50%; object-fit:cover; margin-bottom:10px;">
+  <br>
+  <label for="reg-profile-pic" style="background:linear-gradient(135deg,#6a11cb,#2575fc); padding:8px 20px; border-radius:20px; color:white; cursor:pointer; font-size:0.85rem;">
+    📷 Upload Photo
+  </label>
+  <input type="file" id="reg-profile-pic" accept="image/*" style="display:none;">
+</div>
   <input type="text" id="full-name" placeholder="Full Name" required />
   <input type="text" id="new-username" placeholder="Username" required />
   <input type="email" id="email" placeholder="Email" required />
@@ -225,15 +234,6 @@
   </div>
   <button type="submit" id="register-btn">Register</button>
   <p>Already have an account? <span id="login-link">Login</span></p>
-  <div style="text-align:center; margin-bottom:15px;">
-  <img id="reg-profile-preview" src="https://via.placeholder.com/100/667eea/ffffff?text=Upload" 
-    style="width:100px; height:100px; border-radius:50%; object-fit:cover; margin-bottom:10px;">
-  <br>
-  <label for="reg-profile-pic" style="background:linear-gradient(135deg,#6a11cb,#2575fc); padding:8px 20px; border-radius:20px; color:white; cursor:pointer; font-size:0.85rem;">
-    📷 Upload Photo
-  </label>
-  <input type="file" id="reg-profile-pic" accept="image/*" style="display:none;">
-</div>
 </form>
 
   <form id="forgot-form" class="hidden">
