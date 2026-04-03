@@ -225,6 +225,15 @@
   </div>
   <button type="submit" id="register-btn">Register</button>
   <p>Already have an account? <span id="login-link">Login</span></p>
+  <div style="text-align:center; margin-bottom:15px;">
+  <img id="reg-profile-preview" src="https://via.placeholder.com/100/667eea/ffffff?text=Upload" 
+    style="width:100px; height:100px; border-radius:50%; object-fit:cover; margin-bottom:10px;">
+  <br>
+  <label for="reg-profile-pic" style="background:linear-gradient(135deg,#6a11cb,#2575fc); padding:8px 20px; border-radius:20px; color:white; cursor:pointer; font-size:0.85rem;">
+    📷 Upload Photo
+  </label>
+  <input type="file" id="reg-profile-pic" accept="image/*" style="display:none;">
+</div>
 </form>
 
   <form id="forgot-form" class="hidden">
@@ -344,19 +353,33 @@ backToLogin2.addEventListener("click", () => { hideAllForms(); loginForm.classLi
 document.getElementById("phone").addEventListener("keypress", e => { if (!/[0-9]/.test(e.key)) e.preventDefault(); });
 document.getElementById("otp-code").addEventListener("keypress", e => { if (!/[0-9]/.test(e.key)) e.preventDefault(); });
 
+let regProfilePicBase64 = "";
+
+document.getElementById("reg-profile-pic").addEventListener("change", function() {
+  const file = this.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function() {
+    document.getElementById("reg-profile-preview").src = reader.result;
+    regProfilePicBase64 = reader.result;
+  };
+  reader.readAsDataURL(file);
+});
+
 registerForm.addEventListener("submit", async e => {
   e.preventDefault();
   const newUser = {
-    fullName: document.getElementById("full-name").value.trim(),
-    username: document.getElementById("new-username").value.trim(),
-    email: document.getElementById("email").value.trim(),
-    phone: document.getElementById("phone").value.trim(),
-    address: document.getElementById("address").value.trim(),
-    password: document.getElementById("new-password").value.trim(),
-    gender: document.getElementById("new-gender").value,
-    birthdate: document.getElementById("new-birthdate").value,
-    role: "buyer"
-  };
+  fullName: document.getElementById("full-name").value.trim(),
+  username: document.getElementById("new-username").value.trim(),
+  email: document.getElementById("email").value.trim(),
+  phone: document.getElementById("phone").value.trim(),
+  address: document.getElementById("address").value.trim(),
+  password: document.getElementById("new-password").value.trim(),
+  gender: document.getElementById("new-gender").value,
+  birthdate: document.getElementById("new-birthdate").value,
+  profilePicture: regProfilePicBase64,  // ← dagdag ito
+  role: "buyer"
+};
   try {
     const res = await fetch("https://shopeasy-ecommerce-1-0bpu.onrender.com/api/register", {
       method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(newUser)
@@ -371,6 +394,8 @@ registerForm.addEventListener("submit", async e => {
     } else { message.style.color="red"; message.textContent=result.message; }
   } catch(err){ message.style.color="red"; message.textContent="❌ Server Error"; }
 });
+
+
 
 loginForm.addEventListener("submit", async e => {
   e.preventDefault();
