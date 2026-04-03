@@ -362,7 +362,7 @@ async function loadTracking() {
     listContainer.innerHTML = "";
     emptyMsg.style.display = "none";
 
-    const res = await fetch(`http://localhost:4000/api/purchased?userId=${userId}`);
+    const res = await fetch(`https://shopeasy-ecommerce-1-0bpu.onrender.com/api/purchased?userId=${userId}`);
     
     if (!res.ok) {
       throw new Error("Failed to fetch orders");
