@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
-const bcrypt = require("bcrypt"); // ✅ IMPORT MO TO!
+const bcrypt = require("bcryptjs"); // ✅ IMPORT MO TO!
 
 // -------------------------
 // POST /api/login
