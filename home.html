@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ShopEasy - Products</title>
+
+  <link rel="icon" type="img/shopping.png" href="img/shopping.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
@@ -1926,30 +1928,54 @@ function renderFilteredProducts(list) {
           .join("<br>")
       : `<span class="price">₱${p.price}</span>`;
 
-    grid.innerHTML += `
-      <div class="product">
-        <button class="wishlist-btn ${inWishlist ? "added" : ""}" onclick="toggleWishlist(event, ${index})">
-          <i class="fa fa-heart"></i>
-        </button>
-        
-        <img src="${p.image}" alt="${p.name}" onclick="viewProduct('${p.name}')" style="cursor:pointer">
-        
-        <h3 onclick="viewProduct('${p.name}')" style="cursor:pointer">${p.name}</h3>
-        ${priceDisplay}
-        <p><strong>Category:</strong> ${p.category}</p>
-        <p><strong>Stock:</strong> ${p.quantity}</p>
-        
-        <div style="display: flex; gap: 10px; margin-top: 10px;">
-            <button style="flex: 1;" onclick="addToCart('${p.name}', '${p.image}', '${p.desc}', 5, event)">
-              <i class="fas fa-cart-plus"></i> Add
-            </button>
-
-            <button style="flex: 1; background: #667eea;" onclick="buyNow('${p.name}', event)">
-              <i class="fas fa-bolt"></i> Buy
-            </button>
-        </div>
+    const div = document.createElement("div");
+    div.className = "product";
+    div.innerHTML = `
+      <button class="wishlist-btn ${inWishlist ? "added" : ""}">
+        <i class="fa fa-heart"></i>
+      </button>
+      <img src="${p.image}" alt="${p.name}" style="cursor:pointer; width:100%; height:220px; border-radius:15px; object-fit:cover; margin-bottom:15px;">
+      <h3 style="cursor:pointer">${p.name}</h3>
+      ${priceDisplay}
+      <p><strong>Category:</strong> ${p.category}</p>
+      <p><strong>Stock:</strong> ${p.quantity}</p>
+      <div style="display:flex; gap:10px; margin-top:10px;">
+        <button class="add-btn" style="flex:1;"><i class="fas fa-cart-plus"></i> Add</button>
+        <button class="buy-btn" style="flex:1; background:#667eea; color:white; border:none; padding:12px 20px; border-radius:25px; cursor:pointer; font-weight:600;"><i class="fas fa-bolt"></i> Buy</button>
       </div>
     `;
+
+    // Image click
+    div.querySelector("img").addEventListener("click", () => {
+      localStorage.setItem("selectedProduct", JSON.stringify(p));
+      window.location.href = "productdescription.html";
+    });
+
+    // Title click
+    div.querySelector("h3").addEventListener("click", () => {
+      localStorage.setItem("selectedProduct", JSON.stringify(p));
+      window.location.href = "productdescription.html";
+    });
+
+    // Buy Now
+    div.querySelector(".buy-btn").addEventListener("click", (e) => {
+      e.stopPropagation();
+      localStorage.setItem("selectedProduct", JSON.stringify(p));
+      window.location.href = "productdescription.html";
+    });
+
+    // Add to Cart
+    div.querySelector(".add-btn").addEventListener("click", (e) => {
+      e.stopPropagation();
+      addToCart(p.name, p.image, p.desc, 5, e);
+    });
+
+    // Wishlist
+    div.querySelector(".wishlist-btn").addEventListener("click", (e) => {
+      toggleWishlist(e, index);
+    });
+
+    grid.appendChild(div);
   });
 }
 
@@ -1964,6 +1990,14 @@ function viewProduct(name) {
     // Save selected product to local storage for the next page to use
     localStorage.setItem("selectedProduct", JSON.stringify(product));
     window.location.href = "productdescription.html"; // Siguraduhin na tama ang filename mo
+  }
+}
+
+function selectAndView(index) {
+  const product = products[index];
+  if (product) {
+    localStorage.setItem("selectedProduct", JSON.stringify(product));
+    window.location.href = "productdescription.html";
   }
 }
 

@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ShopEasy - Manage Products</title>
+  <link rel="icon" type="img/shopping.png" href="img/shopping.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -216,7 +217,7 @@
             <p class="info-text"><strong>Category:</strong> ${p.category || "—"}</p>
             <p class="info-text"><strong>Stock:</strong> ${p.quantity || 0}</p>
             <div class="actions">
-              <button class="edit-btn" onclick="showEditPopup(${index})"><i class="fas fa-pen"></i> Edit</button>
+              <button class="edit-btn"a onclick="showEditPopup(${index})"><i class="fas fa-pen"></i> Edit</button>
               <button class="delete-btn" onclick="showDeletePopup(${index})"><i class="fas fa-trash-alt"></i></button>
             </div>
           </div>
